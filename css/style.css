@@ -17,23 +17,11 @@ body {
     padding: 15px;
 }
 
-header {
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-header h1 {
-    font-size: 2rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-}
-
 #turn-indicator {
-    font-size: 1.1rem;
+    font-size: 1rem;
     padding: 6px 18px;
     background: #27ae60;
     border-radius: 20px;
-    display: inline-block;
-    margin-top: 8px;
     font-weight: bold;
 }
 
@@ -265,13 +253,13 @@ header h1 {
 
 #board {
     position: relative;
-    width: 560px;
-    height: 290px;
+    width: 860px;
+    height: 420px;
 }
 
 .board-space {
-    width: 100px;
-    height: 60px;
+    width: 160px;
+    height: 80px;
     background: rgba(255,255,255,0.1);
     border-radius: 6px;
     position: absolute;
@@ -409,17 +397,17 @@ button:disabled {
     background: #95a5a6;
 }
 
-/* Status Bar */
+/* Status Bar (Header) */
 #status-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 15px;
-    background: rgba(0,0,0,0.3);
+    padding: 12px 20px;
+    background: rgba(0,0,0,0.4);
     border-radius: 8px;
-    margin-top: 15px;
+    margin-bottom: 15px;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 15px;
 }
 
 #game-message {
@@ -427,6 +415,11 @@ button:disabled {
     text-align: center;
     color: #f1c40f;
     font-style: italic;
+}
+
+#deck-info, #discard-info {
+    font-size: 0.95rem;
+    white-space: nowrap;
 }
 
 /* Modals */
@@ -755,6 +748,14 @@ button:disabled {
 }
 
 /* Responsive */
+@media (max-width: 900px) {
+    #board {
+        transform: scale(0.7);
+        transform-origin: top center;
+        margin-bottom: -80px;
+    }
+}
+
 @media (max-width: 600px) {
     .card {
         width: 75px;
@@ -762,15 +763,15 @@ button:disabled {
     }
     
     #board {
-        width: 320px;
-        height: 170px;
-        transform: scale(0.55);
+        transform: scale(0.45);
         transform-origin: top center;
-        margin-bottom: -100px;
+        margin-bottom: -180px;
     }
     
-    header h1 {
-        font-size: 1.5rem;
+    #status-bar {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
     }
     
     #rules-panel {

@@ -8,10 +8,13 @@
 </head>
 <body>
     <div id="game-container">
-        <header>
-            <h1>🕵️ Chase On 🕵️</h1>
+        <!-- Status Bar (top) -->
+        <div id="status-bar">
+            <div id="deck-info">🎴 Deck: <span id="deck-count">30</span></div>
             <div id="turn-indicator">Your Turn</div>
-        </header>
+            <div id="game-message">Your turn! Select 2 cards with different names.</div>
+            <div id="discard-info">🔄 Redraws: <span id="discard-count">4</span></div>
+        </div>
 
         <div id="game-area">
             <!-- AI Area (Green) -->
@@ -65,13 +68,6 @@
                 </div>
                 <div id="player-hand" class="hand"></div>
             </div>
-        </div>
-
-        <!-- Status Bar -->
-        <div id="status-bar">
-            <div id="deck-info">🎴 Deck: <span id="deck-count">30</span></div>
-            <div id="discard-info">🔄 Redraws left: <span id="discard-count">4</span></div>
-            <div id="game-message">Your turn! Select 2 cards with different names.</div>
         </div>
 
         <!-- Choice Modal -->

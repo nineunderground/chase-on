@@ -75,10 +75,10 @@ class ChaseOnGame {
         
         // Rectangular track layout: 14 positions forming a rectangle
         // Top: 5 spaces (1-5), Right: 2 spaces (6-7), Bottom: 5 spaces (8-12), Left: 2 spaces (13-14)
-        const spaceWidth = 100;
-        const spaceHeight = 60;
-        const gapH = 10; // Horizontal gap
-        const gapV = 10; // Vertical gap
+        const spaceWidth = 160;
+        const spaceHeight = 80;
+        const gapH = 12; // Horizontal gap
+        const gapV = 12; // Vertical gap
         const stepX = spaceWidth + gapH;  // 110px
         const stepY = spaceHeight + gapV; // 70px
         const offsetX = 10; // Centering offset
