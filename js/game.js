@@ -73,21 +73,45 @@ class ChaseOnGame {
         const board = document.getElementById('board');
         board.innerHTML = '';
         
-        const centerX = 160;
-        const centerY = 160;
-        const radius = 130;
+        // Rectangular track layout: 14 positions forming a rectangle
+        // Top: 5 spaces (1-5), Right: 2 spaces (6-7), Bottom: 5 spaces (8-12), Left: 2 spaces (13-14)
+        const spaceSize = 44;
+        const gap = 8;
+        const step = spaceSize + gap;
+        const offsetX = 54; // Centering offset
+        const offsetY = 0;
         
-        // Create 14 circular positions
+        // Position coordinates map
+        const positions = {
+            // Top row (left to right)
+            1:  { x: 0, y: 0 },
+            2:  { x: step, y: 0 },
+            3:  { x: step * 2, y: 0 },
+            4:  { x: step * 3, y: 0 },
+            5:  { x: step * 4, y: 0 },
+            // Right side (top to bottom)
+            6:  { x: step * 4, y: step },
+            7:  { x: step * 4, y: step * 2 },
+            // Bottom row (right to left)
+            8:  { x: step * 4, y: step * 3 },
+            9:  { x: step * 3, y: step * 3 },
+            10: { x: step * 2, y: step * 3 },
+            11: { x: step, y: step * 3 },
+            12: { x: 0, y: step * 3 },
+            // Left side (bottom to top)
+            13: { x: 0, y: step * 2 },
+            14: { x: 0, y: step }
+        };
+        
+        // Create 14 rectangular positions
         for (let i = 1; i <= this.BOARD_SIZE; i++) {
-            const angle = ((i - 1) / this.BOARD_SIZE) * 2 * Math.PI - Math.PI / 2;
-            const x = centerX + radius * Math.cos(angle) - 22;
-            const y = centerY + radius * Math.sin(angle) - 22;
+            const pos = positions[i];
             
             const space = document.createElement('div');
             space.className = 'board-space';
             space.dataset.position = i;
-            space.style.left = x + 'px';
-            space.style.top = y + 'px';
+            space.style.left = (pos.x + offsetX) + 'px';
+            space.style.top = (pos.y + offsetY) + 'px';
             
             if (i === this.AI_START) {
                 space.classList.add('home-green');
@@ -95,9 +119,8 @@ class ChaseOnGame {
             } else if (i === this.PLAYER_START) {
                 space.classList.add('home-blue');
                 space.innerHTML = '🏠';
-            } else {
-                space.textContent = i;
             }
+            // No number display for other spaces
             
             board.appendChild(space);
         }
@@ -488,7 +511,6 @@ class ChaseOnGame {
         this.aiPosition = this.wrapPosition(this.aiPosition + aiMove);
         
         this.updateMeeplePositions();
-        this.updatePositionDisplays();
         
         const playerMoveText = playerMove >= 0 ? `+${playerMove}` : `${playerMove}`;
         const aiMoveText = aiMove >= 0 ? `+${aiMove}` : `${aiMove}`;
@@ -666,11 +688,6 @@ class ChaseOnGame {
             aiMeeple.style.left = (aiSpace.offsetLeft + 10) + 'px';
             aiMeeple.style.top = (aiSpace.offsetTop + 10) + 'px';
         }
-    }
-
-    updatePositionDisplays() {
-        document.getElementById('player-position').textContent = this.playerPosition;
-        document.getElementById('ai-position').textContent = this.aiPosition;
     }
 
     updateTurnIndicator() {
