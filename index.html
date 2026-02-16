@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chase On - Spy vs Spy</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>🕵️ Chase On 🕵️</h1>
+            <div id="turn-indicator">Your Turn</div>
+        </header>
+
+        <div id="game-area">
+            <!-- AI Area (Blue) -->
+            <div id="ai-area" class="player-area blue-area">
+                <div class="player-header">
+                    <span class="player-label">🤖 AI Spy (Blue)</span>
+                    <span class="player-position">Position: <span id="ai-position">8</span></span>
+                </div>
+                <div class="card-collection">
+                    <span class="collection-label">Recruited:</span>
+                    <div id="ai-recruited" class="recruited-cards"></div>
+                </div>
+                <div id="ai-hand" class="hand">
+                    <div class="card card-back"></div>
+                    <div class="card card-back"></div>
+                    <div class="card card-back"></div>
+                    <div class="card card-back"></div>
+                </div>
+            </div>
+
+            <!-- Circular Board -->
+            <div id="board-container">
+                <div id="board"></div>
+            </div>
+
+            <!-- Play Area -->
+            <div id="play-area">
+                <h3 id="play-instruction">Select 2 different cards to play</h3>
+                <div id="play-zone">
+                    <div id="face-up-slot" class="play-slot">
+                        <span>Face Up</span>
+                        <div class="slot-content"></div>
+                    </div>
+                    <div id="face-down-slot" class="play-slot">
+                        <span>Face Down</span>
+                        <div class="slot-content"></div>
+                    </div>
+                </div>
+                <div id="play-actions">
+                    <button id="confirm-play-btn" disabled>Confirm Play</button>
+                    <button id="clear-play-btn" disabled>Clear Selection</button>
+                </div>
+            </div>
+
+            <!-- Player Area (Green) -->
+            <div id="player-area" class="player-area green-area">
+                <div class="player-header">
+                    <span class="player-label">🕵️ You (Green)</span>
+                    <span class="player-position">Position: <span id="player-position">1</span></span>
+                </div>
+                <div class="card-collection">
+                    <span class="collection-label">Recruited:</span>
+                    <div id="player-recruited" class="recruited-cards"></div>
+                </div>
+                <div id="player-hand" class="hand"></div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div id="status-bar">
+            <div id="deck-info">🎴 Deck: <span id="deck-count">30</span></div>
+            <div id="discard-info">🔄 Redraws left: <span id="discard-count">4</span></div>
+            <div id="game-message">Your turn! Select 2 cards with different names.</div>
+        </div>
+
+        <!-- Choice Modal -->
+        <div id="choice-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="choice-title">Choose a Card</h2>
+                <p id="choice-description"></p>
+                <div id="choice-cards"></div>
+            </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div id="gameover-modal" class="modal hidden">
+            <div class="modal-content gameover-content">
+                <h2 id="gameover-title">Game Over</h2>
+                <p id="gameover-message"></p>
+                <button id="restart-btn">Play Again</button>
+            </div>
+        </div>
+
+        <!-- Rules Button -->
+        <button id="rules-btn" onclick="toggleRules()">📖 Rules</button>
+
+        <!-- Rules Panel -->
+        <div id="rules-panel" class="hidden">
+            <div class="rules-content">
+                <button class="close-btn" onclick="toggleRules()">×</button>
+                <h2>How to Play</h2>
+                
+                <h3>🎯 Objective</h3>
+                <p>Catch the opponent's spy by landing on or passing their position, OR collect 3 Codebreakers to win instantly.</p>
+                
+                <h3>⚠️ Watch Out</h3>
+                <p>Collecting 3 Daredevils means you LOSE!</p>
+
+                <h3>🎮 Your Turn</h3>
+                <ol>
+                    <li><strong>Play:</strong> Select 2 cards with different names</li>
+                    <li><strong>Choose:</strong> Pick which is face-up (other is face-down)</li>
+                    <li><strong>Recruit:</strong> Opponent picks one card, you get the other</li>
+                    <li><strong>Move:</strong> Both spies move based on recruited cards</li>
+                </ol>
+
+                <h3>📊 Movement Values</h3>
+                <p>Each card shows 3 values. Which you use depends on copies collected:</p>
+                <ul>
+                    <li>1 copy → 1st value</li>
+                    <li>2 copies → 2nd value</li>
+                    <li>3+ copies → 3rd value</li>
+                </ul>
+                <p>Positive = toward opponent, Negative = backward</p>
+
+                <h3>🃏 Special Cards</h3>
+                <ul>
+                    <li><strong>Codebreaker:</strong> 0/0/WIN - No movement but 3 = victory!</li>
+                    <li><strong>Daredevil:</strong> 2/3/LOSE - Fast but 3 = defeat!</li>
+                    <li><strong>Double Agent:</strong> -1/6/-1 - Risky swings!</li>
+                    <li><strong>Sidekick:</strong> Always 4</li>
+                    <li><strong>Mole:</strong> Always -3</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/cards.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

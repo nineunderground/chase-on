@@ -1,0 +1,345 @@
+AGENT AVENUE - GAME REVIEWS COMPILATION
+========================================
+Sources: BoardGameGeek reviews and various board game publications
+Compiled for game development reference
+
+OVERVIEW FROM REVIEWS
+---------------------
+Agent Avenue is a highly praised 2-player bluffing and set-collection card game from 
+Nerdlab Games (the Mindbug publisher). Players are undercover animal spies on the same 
+suburban street, racing to catch each other using a unique "I split, you choose" mechanic.
+
+Play Time: 5-20 minutes
+Players: 2 (with variants for 3-4 or teams)
+Age: 8+
+BGG ID: #422732
+
+THEMATIC ELEMENTS
+-----------------
+- 1950s anthropomorphic animal spy theme
+- Charming artwork by Fanny Pastor-Berlie with unique poses per card
+- Quirky suburban street setting ("Agent Avenue")
+- Light theme - gameplay over narrative
+
+CORE GAMEPLAY HIGHLIGHTS
+------------------------
+The "I split, you choose" mechanic creates intense psychological tension:
+- Active player plays one card face-up and one face-down
+- Opponent picks which card they want
+- Active player gets the remaining card
+- Cards move your marker based on set collection size
+
+Movement scaling is key:
+- First copy of an agent type: smaller movement
+- Second copy: medium movement  
+- Third+ copies: larger movement (or special effects)
+
+WIN CONDITIONS (from reviews):
+- Land on or pass opponent's meeple position
+- Collect three Codebreakers
+- Force opponent to collect three Daredevils
+
+ADVANCED MODE:
+- Black Market cards add asymmetry and surprise abilities
+- Increases replayability without adding complexity
+
+TEAM VARIANT:
+- Supports 2v2 play
+- Partners hide information from each other for deduction fun
+
+CRITICAL RECEPTION
+------------------
+
+PROS:
+✓ Tense, meaningful decisions from drafting and bluffing
+✓ Quick playtime with high replayability
+✓ Multiple win paths create varied strategies
+✓ Charming anthropomorphic 1950s artwork
+✓ Simple rules, easy to teach
+✓ "Agonizing choices" and psychological depth
+✓ Addictive - leads to "best of seven" sessions
+✓ Variants add variety without complexity overload
+✓ High-quality production (thick board, chunky wooden meeples)
+✓ Clear icons and good component quality
+✓ Spiel des Jahres 2025 nominee mention
+
+CONS:
+✗ Limited strategic depth for very experienced players
+✗ Random draws can occasionally disrupt plans
+✗ Superficial theme with minimal narrative immersion
+✗ Short length may feel lightweight for some
+✗ Shipping from publisher (Germany) can be pricey
+✗ Black Market card variability can swing games
+✗ Less appeal for non-competitive players
+✗ Box is bulkier than necessary for components
+
+REVIEWER QUOTES & OPINIONS
+--------------------------
+"Super simple yet addictive with fantastic tension"
+
+"A fantastic deduction dance with memorable mind games"
+
+"Really very, very good - leads to instant rematch appeal"
+
+"Agonizing decisions in every round"
+
+"Must-try two-player filler for couples or quick duels"
+
+COMPARISONS TO OTHER GAMES
+--------------------------
+Reviewers frequently compare Agent Avenue to:
+- Hanamikoji (for fast psychological duels)
+- Jaipur (for deduction and two-player interaction)
+- Other "I cut, you choose" mechanism games
+
+The consensus is that Agent Avenue holds its own among these classics
+while offering a unique spy chase theme and set-collection twist.
+
+WHAT MAKES IT WORK
+------------------
+1. BLUFFING: Hide powerful cards to bait opponent into bad choices
+2. READING: Watch opponent's tableau for risks (like Daredevils accumulating)
+3. RISK/REWARD: Cards like Double Agent have big jumps at exactly 2 copies
+4. TEMPO: Quick games mean mistakes don't sting too long
+5. VARIETY: Multiple paths to victory prevent stale strategies
+
+TARGET AUDIENCE
+---------------
+- Couples looking for quick competitive games
+- Players who enjoy psychological/bluffing elements
+- Fans of "I split, you choose" mechanisms
+- Those wanting a light filler with depth
+- Two-player game enthusiasts
+
+NOT IDEAL FOR:
+- Players wanting deep strategic complexity
+- Those preferring strong thematic immersion
+- Non-competitive gaming groups
+- Solo players (no solo mode)
+
+PRODUCTION NOTES
+----------------
+- 50+ cards with unique artwork
+- Thick double-sided game board
+- Chunky wooden meeple markers
+- Clear iconography
+- High production quality overall
+- Published by Nerdlab Games (Germany)
+
+================================================================================
+DETAILED REVIEWS
+================================================================================
+
+REVIEW #1 - "Two Spies One Street"
+----------------------------------
+Source: BoardGameGeek
+Rating: 8/10
+
+THEME:
+An anthropomorphic world where you play as a spy trying to unmask an enemy spy.
+Be faster and smarter than your opponent to win.
+
+GAMEPLAY SUMMARY:
+- Play two cards from hand to move around the game board
+- Place one card face-down, one face-up (opponent sees one)
+- Opponent chooses one of the two cards to take
+- Cards show movement steps (positive moves forward, negative moves back!)
+- Crucial to think carefully about card plays
+- Bluffing is key - or avoiding opponent's double bluff
+- Can exchange cards from hand with draw pile (4 times per game)
+- Helps remove bad cards without giving them to opponent
+
+CARD VARIETY:
+- Many different card types making choices difficult
+- Some cards: win or lose immediately if you play a third of the same suit
+- Must be careful not to let opponent get "easy" victory
+
+GAME MECHANICS NOTED:
+1. "I split, you choose" - reveal two cards, opponent picks one, you get other
+2. Hand management - track cards, play them, or discard strategically
+3. Race element - thematic component with comical cartoon spies chasing each other
+4. Set collection - collect sets to take more steps per card
+
+REVIEWER'S OPINION:
+
+STRENGTHS:
++ Quick to learn, plays smoothly
++ Beautiful anthropomorphic character illustrations (comic book vibe)
++ Game board is nice addition to card game
++ Components beautifully designed and good quality
++ Black market option adds difficulty and interest
++ Easy to play rematch immediately
+
+WEAKNESSES:
+- Primarily 2-player (harder to bring to larger game nights)
+- Base game a bit too easy without black market cards
+- (Minor drawbacks that don't prevent replay)
+
+CONCLUSION:
+"Fantastic game that plays smoothly and is easy to learn. Highly recommend to
+anyone who enjoys or frequently plays 2-player games. Every opportunity I get
+to play this game, I'll seize it for a good round of Agent Avenue."
+
+FINAL SCORE: 8/10
+
+REVIEW #2 - "Bordspelwereld" (Dutch Review)
+-------------------------------------------
+Source: BoardGameGeek
+Rating: 5/10
+
+BOX CONTENTS:
+- 1 double-sided game board (standard + advanced variants)
+- 38 Agent cards (basic deck for set collection)
+- 15 Black Market cards (advanced/exciting mode)
+- 2 double-sided player overview cards
+- 2 playing pawns (meeples)
+- Game rules (multiple languages available)
+
+SETUP:
+- Place board in middle (two sides: beginner and advanced)
+- Players choose colors (green or blue)
+- Tokens placed on home bases
+- Shuffle agent cards, deal 4 to each player
+- Remaining cards form draw pile
+- Determine starting player
+
+TURN STRUCTURE:
+1. Choose 2 cards from hand (must be different names)
+2. Play one face-up, one face-down
+3. Replenish hand to 4 cards
+4. Opponent "recruits" one card (places in their overview)
+5. Active player gets remaining card
+6. Both players move agents based on card numbers
+
+MOVEMENT NUMBERS:
+- Three numbers on each card
+- 1 card of type = top number
+- 2 cards of type = second number
+- 3+ cards of type = third number
+- Can be forward, backward, or stationary
+
+DISCARD OPTION:
+- Before playing, may discard one card face-down and draw new
+- Limited to 4 times per game total
+- Track by placing discards face-down near play area
+
+SPECIAL CARDS DETAILED:
+- CODEBREAKER: No movement, but 3 = instant win
+- DAREDEVIL: Fast movement, but 3 = instant loss
+- DOUBLE AGENT: 1st card sends back, 2nd moves almost half board, 3rd goes back again
+- SENTINEL: Every card after 2nd gives 6 moves
+- Note: 4th, 5th, 6th+ cards still use the 3rd number
+
+GAME END:
+- Agent catches up or passes other agent = win
+- If player can't play 2 cards, closest agent to catching other wins
+
+ADVANCED MODE:
+- Flip board to advanced side
+- Corner squares = black markets
+- Land exactly on black market = choose a market card
+- Setup: Shuffle 15 market cards, draw pile, 3 face-up as market
+- Two card types: ONGOING (rest of game) and INSTANT (immediate bonus, then discard)
+- Chosen cards immediately replaced from draw pile
+
+3-4 PLAYER VARIANT:
+- 4 players: Form 2 teams, each player gets 4 hidden cards
+- One teammate plays face-up, other adds face-down (different names)
+- Both team members must agree when recruiting from opponents
+- 3 players: One player uses two separate 4-card hands
+
+REVIEWER'S OPINION:
+
+POSITIVES:
++ Cards and box look cheerful
++ Artwork is good
+
+NEGATIVES:
+- Game felt too short (finished in 4 turns)
+- Took longer to set up than play
+- Felt like a waste of time
+- "Flimsy little game"
+
+CONCLUSION:
+"Hard to imagine playing more than twice. Not giving it shelf space."
+
+FINAL SCORE: 5/10
+
+REVIEW #3 - "MeepleTales"
+-------------------------
+Source: BoardGameGeek
+Rating: Silver Seal of Approval
+
+GAME DESCRIPTION:
+A deduction game where two spies enlist neighborhood help to catch/overtake each other.
+Quick bluffing game using "I Split, You Choose" mechanism.
+
+GAME ANATOMY:
+
+BOARD:
+- 14 movement locations
+- 2 starting locations (opposing sides)
+- Direction indicators for movement
+- Advanced mode: 4 black market locations (activate when ending movement there)
+
+AGENT CARDS (8 different agents):
+- Three numbers on left-hand side:
+  * 1st number: Movement for first time gaining this agent
+  * 2nd number: Movement for second time gaining
+  * 3rd number: Movement for third time (and all subsequent times)
+- EXCEPTIONS:
+  * Mole and Sidekick: Only ONE value (break main rule)
+  * Codebreaker and Daredevil: No third movement value
+    - 3rd Codebreaker = WIN
+    - 3rd Daredevil = LOSE
+
+BLACK MARKET CARDS:
+- Gained by ending movement on black market space (advanced board)
+- Choose one of three face-up cards
+- Two types: INSTANT effects or ONGOING abilities
+- Add additional layers of strategy and bluffing
+
+SETUP:
+1. Place board center of table (standard side up)
+2. Place meeples at designated starting locations
+   - Blue house for blue player
+   - Green house for green player
+3. Shuffle agent cards, deal 4 to each player
+
+HOW TO PLAY:
+
+Game continues until win/lose condition met.
+If BOTH players meet victory condition = active player wins.
+
+TURN STRUCTURE (3 steps):
+
+1. PLAY STEP:
+   - Select 2 different agents from hand
+   - Play one face-up, one face-down
+   - Optional: Discard one card and redraw (4 times per game limit)
+
+2. RECRUIT STEP:
+   - Other player selects which agent they add to their tableau and move
+   - Unselected agent goes to active player's tableau + move
+
+3. END STEP:
+   - Check win/lose conditions
+   - Redraw back up to 4 agent cards
+
+REVIEWER'S FINAL THOUGHTS:
+
+STRENGTHS:
++ Enhanced with repeated plays against same opponent
++ Great use of I-pick-you-choose combined with bluffing
++ Simple to understand but hard to master
++ Black market cards shake up bluffing/strategy without complex learning
++ Perfect for repeated plays
++ Depth of agents becomes apparent after first game
++ Multiple moments of anxious decision-making
++ Black market drastically changes battlefield when core is mastered
+
+CONCLUSION:
+"If you enjoy quick games that you can dive into with the same opponent
+then I can easily recommend Agent Avenue."
+
+FINAL SCORE: Silver Seal of Approval

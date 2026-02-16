@@ -1,0 +1,167 @@
+AGENT AVENUE - OFFICIAL RULES
+==============================
+By Nerdlab Games
+Source: https://nerdlab-games.com/wp-content/uploads/2024/09/Agent-Avenue-Rulebook-ENG.pdf
+
+OVERVIEW
+--------
+Agent Avenue is a 2-player bluffing and set-collection card game where spies race to catch each other by recruiting neighborhood agents. The game uses an "I split, you choose" mechanism.
+
+Players: 2 (or 3-4 with team variant)
+Play Time: 15-30 minutes
+
+COMPONENTS
+----------
+- 1 Game board: 14 spots in a CIRCLE (after spot 14, next is spot 1)
+  * Position 1 = Green player home/start
+  * Position 8 = Blue player home/start
+- 2 Meeples: 1 green, 1 blue
+- 38 Agent cards with movement values (1st copy, 2nd copy, 3rd+ copy):
+  * 6x Double Agent (-1, 6, -1)
+  * 6x Enforcer (1, 2, 3)
+  * 6x Codebreaker (0, 0, WIN) - 3rd card = instant win
+  * 6x Saboteur (-1, -1, -2)
+  * 6x Daredevil (2, 3, LOSE) - 3rd card = instant loss
+  * 6x Sentinel (0, 2, 6)
+  * 1x Sidekick (4) - single value only
+  * 1x Mole (-3) - single value only
+- Advanced cards (NOT used in this version)
+
+SIMPLE MODE SETUP
+-----------------
+1. Place the board with the simple side facing up
+2. Each player picks a color and places their meeple on their home space
+3. Shuffle all 38 agent cards
+4. Deal 4 cards face-down to each player
+5. Place remaining cards as a face-down draw pile
+6. Starting player: whoever last watched a spy movie
+
+TURN STRUCTURE (Play > Recruit > End)
+-------------------------------------
+
+PLAY PHASE:
+- Play 2 cards from your hand with DIFFERENT names
+- Place 1 card face-up and 1 card face-down
+- Optional: Before playing, you may discard your entire hand and draw 4 new cards
+  (Each player may do this up to 4 times total per game)
+- After playing, draw back up to 4 cards
+
+RECRUIT PHASE:
+- Your opponent looks at both cards (including the face-down one)
+- Opponent chooses 1 card to recruit (place face-up in front of them)
+- You recruit the remaining card (place face-up in front of you)
+
+END PHASE:
+- Both players move their meeples based on recruited cards
+- Movement is determined by the card's icon AND how many copies you have:
+  * 1 copy of that agent: Use the 1st movement value
+  * 2 copies: Use the 2nd movement value
+  * 3+ copies: Use the 3rd movement value
+- Check for win/loss conditions
+
+MOVEMENT
+--------
+Each agent card shows 3 movement values. The value you use depends on your collection:
+- Having 1 copy → Use leftmost (1st) value
+- Having 2 copies → Use middle (2nd) value
+- Having 3+ copies → Use rightmost (3rd) value
+
+Positive numbers: Move toward opponent
+Negative numbers: Move away from opponent (backward)
+Zero: Don't move
+
+AGENT CARDS (38 total)
+----------------------
+Format: (1st copy, 2nd copy, 3rd+ copy)
+
+DOUBLE AGENT (6 cards)
+- Movement: -1 / 6 / -1
+- Risky! 1st goes back, 2nd is huge leap, 3rd+ goes back again
+
+ENFORCER (6 cards)
+- Movement: 1 / 2 / 3
+- Steady, reliable forward progression
+
+CODEBREAKER (6 cards)
+- Movement: 0 / 0 / WIN
+- No movement, but collect 3 = INSTANT WIN!
+
+SABOTEUR (6 cards)
+- Movement: -1 / -1 / -2
+- Always moves backward! Tactical retreat card
+
+DAREDEVIL (6 cards)
+- Movement: 2 / 3 / LOSE
+- Fast forward movement, but collect 3 = INSTANT LOSS!
+
+SENTINEL (6 cards)
+- Movement: 0 / 2 / 6
+- Defensive early, powerful when collected
+
+SIDEKICK (1 card)
+- Movement: 4 (single value - always 4)
+- Unique card, consistent movement
+
+MOLE (1 card)
+- Movement: -3 (single value - always -3)
+- Unique card, always moves backward
+
+WIN CONDITIONS
+--------------
+You WIN if:
+1. Your meeple catches (lands on or passes) your opponent's meeple
+2. You collect 3 Codebreaker cards
+3. Your opponent collects 3 Daredevil cards
+
+LOSE CONDITIONS
+---------------
+You LOSE if:
+1. Your opponent's meeple catches yours
+2. Your opponent collects 3 Codebreakers
+3. You collect 3 Daredevil cards
+
+DECK DEPLETION
+--------------
+If the deck runs out and a player has fewer than 2 cards to play:
+- The player closest to catching their opponent wins
+- Ties go to the active player (whose turn it is)
+
+ADVANCED MODE
+-------------
+Use the board side with black market corners.
+
+Setup changes:
+- Shuffle the 15 black market cards separately
+- Place 3 face-up as a supply, rest as draw pile
+
+During play:
+- If you land EXACTLY on a black market space after moving, take 1 supply card
+- Replace taken card from the black market draw pile
+- Card types:
+  * INSTANT: Resolve immediately, then discard
+  * ONGOING: Keep in play for continued effects
+- If both players land on black market spaces, active player resolves first
+
+TEAM VARIANT (3-4 Players)
+--------------------------
+- Form teams of 2 players (or 2 vs 1 in 3-player)
+- Each team shares 1 meeple and played cards
+- Team members agree on play order
+- One teammate plays face-up card, other plays face-down card
+- Cards must have different names
+- Opponents choose which team gets which card
+- Discard limit: 2 per player (4 total for solo player in 3-player game)
+
+STRATEGY TIPS
+-------------
+1. Bluffing: The face-down card creates mind games. What does your opponent want?
+2. Codebreakers: Valuable but obvious - opponents will try to take them
+3. Daredevils: Fast but risky - can backfire if you collect too many
+4. Set building: More copies = more movement, plan your collections
+5. Watch opponent's collection to predict their choices
+
+CREDITS
+-------
+Game Design: Nerdlab Games
+Website: https://nerdlab-games.com
+This rules summary compiled from official rulebook for personal reference.
