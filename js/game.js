@@ -871,9 +871,8 @@ class ChaseOnGame {
         document.getElementById('gameover-modal').classList.add('hidden');
         document.getElementById('play-again-btn').classList.remove('hidden');
         
-        // Disable all game buttons
+        // Disable confirm button
         document.getElementById('confirm-play-btn').disabled = true;
-        document.getElementById('rules-btn').disabled = true;
         
         // Make cards non-interactive
         document.querySelectorAll('#player-hand .card').forEach(card => {

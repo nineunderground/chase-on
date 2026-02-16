@@ -293,9 +293,8 @@ body {
 .meeple {
     width: 55px;
     height: 55px;
-    border-radius: 50%;
     position: absolute;
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -304,14 +303,12 @@ body {
     transform: translate(-50%, -50%);
 }
 
-.meeple.green {
-    background: #27ae60;
-    border: 3px solid #fff;
+.meeple.green::after {
+    content: '🦖';
 }
 
-.meeple.blue {
-    background: #3498db;
-    border: 3px solid #fff;
+.meeple.blue::after {
+    content: '🦁';
 }
 
 /* Play Area */
