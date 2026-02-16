@@ -274,8 +274,11 @@ class ChaseOnGame {
         }
         
         if (this.faceDownCard) {
-            const cardEl = createCardElement(this.faceDownCard);
+            // Show as card back in Face Down slot
+            const cardEl = document.createElement('div');
+            cardEl.className = 'card card-back';
             cardEl.draggable = true;
+            cardEl.dataset.cardId = this.faceDownCard.id;
             cardEl.addEventListener('dragstart', (e) => this.handleDragStart(e, this.faceDownCard));
             cardEl.addEventListener('dragend', (e) => this.handleDragEnd(e));
             faceDownSlot.appendChild(cardEl);
@@ -594,21 +597,21 @@ class ChaseOnGame {
         const cardsContainer = document.getElementById('choice-cards');
         
         title.textContent = 'Choose Your Card';
-        desc.textContent = 'Pick one to add to your collection:';
+        desc.textContent = 'Pick the face-up card OR take a chance on the hidden one:';
         cardsContainer.innerHTML = '';
         
-        // NOW reveal face-down card in the slot
-        const faceDownSlot = document.querySelector('#face-down-slot .slot-content');
-        faceDownSlot.innerHTML = '';
-        faceDownSlot.appendChild(createCardElement(this.faceDownCard));
+        // Face-up card - shown
+        const faceUpCount = countCardType(this.playerRecruited, this.faceUpCard.type);
+        const faceUpEl = createCardElement(this.faceUpCard, { clickable: true, highlightIndex: Math.min(faceUpCount, 2) });
+        faceUpEl.addEventListener('click', () => this.playerTakesCard(this.faceUpCard));
+        cardsContainer.appendChild(faceUpEl);
         
-        // Show both as choices in modal
-        [this.faceUpCard, this.faceDownCard].forEach(card => {
-            const playerCount = countCardType(this.playerRecruited, card.type);
-            const cardEl = createCardElement(card, { clickable: true, highlightIndex: Math.min(playerCount, 2) });
-            cardEl.addEventListener('click', () => this.playerTakesCard(card));
-            cardsContainer.appendChild(cardEl);
-        });
+        // Face-down card - shown as BACK (blind choice!)
+        const faceDownEl = document.createElement('div');
+        faceDownEl.className = 'card card-back clickable';
+        faceDownEl.innerHTML = '<div style="position:absolute;bottom:5px;width:100%;text-align:center;font-size:0.7rem;color:#888;">Mystery</div>';
+        faceDownEl.addEventListener('click', () => this.playerTakesCard(this.faceDownCard));
+        cardsContainer.appendChild(faceDownEl);
         
         modal.classList.remove('hidden');
     }
@@ -617,6 +620,11 @@ class ChaseOnGame {
         const aiGets = playerChoice.id === this.faceUpCard.id ? this.faceDownCard : this.faceUpCard;
         
         document.getElementById('choice-modal').classList.add('hidden');
+        
+        // Now reveal the face-down card in the slot
+        const faceDownSlot = document.querySelector('#face-down-slot .slot-content');
+        faceDownSlot.innerHTML = '';
+        faceDownSlot.appendChild(createCardElement(this.faceDownCard));
         
         this.setMessage(`You took: ${playerChoice.name}. AI gets: ${aiGets.name}`);
         
