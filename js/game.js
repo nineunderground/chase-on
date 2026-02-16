@@ -573,6 +573,7 @@ class ChaseOnGame {
         // Condition 2: Check for overtake
         // The player who moved MORE positions checks if they crossed any position
         // from the other player's series (old pos + all positions moved through)
+        // Also check if the other player's final position is in the winner's movement series
         const playerAbsMove = Math.abs(playerMove);
         const aiAbsMove = Math.abs(aiMove);
         
@@ -581,7 +582,8 @@ class ChaseOnGame {
             const playerSeries = this.getMovementSeries(playerOldPos, playerMove);
             const aiSeries = this.getMovementSeries(aiOldPos, aiMove, true); // include start pos
             
-            const overtook = aiSeries.some(pos => playerSeries.includes(pos));
+            // Check if any AI position (including start) or AI's final position is in player's path
+            const overtook = aiSeries.some(pos => playerSeries.includes(pos)) || playerSeries.includes(aiNewPos);
             if (overtook) {
                 this.endGame('Blue spy overtook Green!', true);
                 return true;
@@ -591,7 +593,8 @@ class ChaseOnGame {
             const aiSeries = this.getMovementSeries(aiOldPos, aiMove);
             const playerSeries = this.getMovementSeries(playerOldPos, playerMove, true); // include start pos
             
-            const overtook = playerSeries.some(pos => aiSeries.includes(pos));
+            // Check if any player position (including start) or player's final position is in AI's path
+            const overtook = playerSeries.some(pos => aiSeries.includes(pos)) || aiSeries.includes(playerNewPos);
             if (overtook) {
                 this.endGame('Green spy overtook Blue!', false);
                 return true;
