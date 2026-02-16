@@ -48,10 +48,10 @@ class ChaseOnGame {
             // Show result after animation
             setTimeout(() => {
                 if (this.isPlayerTurn) {
-                    result.textContent = '🔵 You go first!';
+                    result.textContent = '🦁 You go first!';
                     result.style.color = '#3498db';
                 } else {
-                    result.textContent = '🟢 AI goes first!';
+                    result.textContent = '🦖 AI goes first!';
                     result.style.color = '#27ae60';
                 }
                 
