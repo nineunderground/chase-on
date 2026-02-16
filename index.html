@@ -39,20 +39,19 @@
 
             <!-- Play Area -->
             <div id="play-area">
-                <h3 id="play-instruction">Select 2 different cards to play</h3>
+                <h3 id="play-instruction">Drag 2 different cards to the slots</h3>
                 <div id="play-zone">
-                    <div id="face-up-slot" class="play-slot">
-                        <span>Face Up</span>
+                    <div id="face-up-slot" class="play-slot drop-zone" data-slot="faceup">
+                        <span>👁️ Face Up</span>
                         <div class="slot-content"></div>
                     </div>
-                    <div id="face-down-slot" class="play-slot">
-                        <span>Face Down</span>
+                    <div id="face-down-slot" class="play-slot drop-zone" data-slot="facedown">
+                        <span>🙈 Face Down</span>
                         <div class="slot-content"></div>
                     </div>
                 </div>
                 <div id="play-actions">
-                    <button id="confirm-play-btn" disabled>Confirm Play</button>
-                    <button id="clear-play-btn" disabled>Clear Selection</button>
+                    <button id="confirm-play-btn" disabled>✅ Confirm Play</button>
                 </div>
             </div>
 
@@ -91,9 +90,24 @@
             <div class="modal-content gameover-content">
                 <h2 id="gameover-title">Game Over</h2>
                 <p id="gameover-message"></p>
-                <button id="restart-btn">Play Again</button>
+                <button id="close-gameover-btn">View Final Board</button>
             </div>
         </div>
+
+        <!-- Coin Flip Modal -->
+        <div id="coin-modal" class="modal hidden">
+            <div class="modal-content coin-content">
+                <h2>Who Goes First?</h2>
+                <div id="coin" class="coin">
+                    <div class="coin-face coin-green">🟢</div>
+                    <div class="coin-face coin-blue">🔵</div>
+                </div>
+                <p id="coin-result"></p>
+            </div>
+        </div>
+
+        <!-- Play Again Button (shown after closing game over) -->
+        <button id="play-again-btn" class="hidden">🔄 Play Again</button>
 
         <!-- Rules Button -->
         <button id="rules-btn" onclick="toggleRules()">📖 Rules</button>

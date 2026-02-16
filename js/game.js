@@ -18,16 +18,55 @@ class ChaseOnGame {
         this.playerRedraws = 4;
         this.aiRedraws = 4;
         this.isPlayerTurn = true;
-        this.selectedCards = [];
         this.faceUpCard = null;
         this.faceDownCard = null;
         this.gameOver = false;
+        this.draggedCard = null;
         
         this.ai = new AIPlayer(this);
         
-        this.initBoard();
-        this.initGame();
         this.bindEvents();
+        this.showCoinFlip();
+    }
+
+    showCoinFlip() {
+        const modal = document.getElementById('coin-modal');
+        const coin = document.getElementById('coin');
+        const result = document.getElementById('coin-result');
+        
+        modal.classList.remove('hidden');
+        result.textContent = '';
+        coin.className = 'coin';
+        
+        // Random result
+        this.isPlayerTurn = Math.random() < 0.5;
+        
+        // Start flip animation after a moment
+        setTimeout(() => {
+            coin.classList.add(this.isPlayerTurn ? 'result-green' : 'result-blue');
+            
+            // Show result after animation
+            setTimeout(() => {
+                if (this.isPlayerTurn) {
+                    result.textContent = '🟢 You go first!';
+                    result.style.color = '#27ae60';
+                } else {
+                    result.textContent = '🔵 AI goes first!';
+                    result.style.color = '#3498db';
+                }
+                
+                // Start game after showing result
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    this.initBoard();
+                    this.initGame();
+                    
+                    if (!this.isPlayerTurn) {
+                        this.startAITurn();
+                    }
+                }, 1500);
+            }, 2000);
+        }, 500);
     }
 
     initBoard() {
@@ -89,13 +128,35 @@ class ChaseOnGame {
         this.renderPlayerHand();
         this.renderAIHand();
         this.updateStatus();
-        this.setMessage('Your turn! Select 2 cards with different names.');
+        this.updateTurnIndicator();
+        
+        if (this.isPlayerTurn) {
+            this.setMessage('Your turn! Drag 2 cards with different names to the slots.');
+        }
     }
 
     bindEvents() {
         document.getElementById('confirm-play-btn').addEventListener('click', () => this.confirmPlay());
-        document.getElementById('clear-play-btn').addEventListener('click', () => this.clearSelection());
-        document.getElementById('restart-btn').addEventListener('click', () => this.restart());
+        document.getElementById('close-gameover-btn').addEventListener('click', () => this.closeGameOver());
+        document.getElementById('play-again-btn').addEventListener('click', () => this.restart());
+        
+        // Drop zone events
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', (e) => this.handleDragOver(e));
+            zone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+            zone.addEventListener('drop', (e) => this.handleDrop(e));
+        });
+        
+        // Allow dropping back to player hand area
+        document.getElementById('player-hand').addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+        document.getElementById('player-hand').addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (this.draggedCard) {
+                this.returnCardToHand(this.draggedCard);
+            }
+        });
     }
 
     renderPlayerHand() {
@@ -105,11 +166,125 @@ class ChaseOnGame {
         this.playerHand.forEach(card => {
             const count = countCardType(this.playerRecruited, card.type);
             const cardEl = createCardElement(card, { highlightIndex: Math.min(count, 2) });
-            cardEl.addEventListener('click', () => this.selectCard(card));
+            
+            // Make draggable if it's player's turn
+            if (this.isPlayerTurn && !this.gameOver) {
+                cardEl.draggable = true;
+                cardEl.addEventListener('dragstart', (e) => this.handleDragStart(e, card));
+                cardEl.addEventListener('dragend', (e) => this.handleDragEnd(e));
+            }
+            
             handEl.appendChild(cardEl);
         });
         
-        this.updateCardSelectionState();
+        this.updateConfirmButton();
+    }
+
+    handleDragStart(e, card) {
+        this.draggedCard = card;
+        e.target.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', card.id);
+    }
+
+    handleDragEnd(e) {
+        e.target.classList.remove('dragging');
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.classList.remove('drag-over');
+        });
+    }
+
+    handleDragOver(e) {
+        e.preventDefault();
+        e.currentTarget.classList.add('drag-over');
+    }
+
+    handleDragLeave(e) {
+        e.currentTarget.classList.remove('drag-over');
+    }
+
+    handleDrop(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        
+        if (!this.draggedCard) return;
+        
+        const slot = e.currentTarget.dataset.slot;
+        const card = this.draggedCard;
+        
+        // Check if this card type conflicts with the other slot
+        const otherCard = slot === 'faceup' ? this.faceDownCard : this.faceUpCard;
+        if (otherCard && otherCard.type === card.type) {
+            this.setMessage('Cards must have different names!');
+            return;
+        }
+        
+        // If this slot already has a card, return it to hand
+        if (slot === 'faceup' && this.faceUpCard) {
+            this.playerHand.push(this.faceUpCard);
+        } else if (slot === 'facedown' && this.faceDownCard) {
+            this.playerHand.push(this.faceDownCard);
+        }
+        
+        // Remove card from hand
+        this.playerHand = this.playerHand.filter(c => c.id !== card.id);
+        
+        // Place in slot
+        if (slot === 'faceup') {
+            this.faceUpCard = card;
+        } else {
+            this.faceDownCard = card;
+        }
+        
+        this.renderPlayerHand();
+        this.renderPlaySlots();
+        this.updateConfirmButton();
+        this.draggedCard = null;
+    }
+
+    returnCardToHand(card) {
+        // Check if card is in a slot
+        if (this.faceUpCard && this.faceUpCard.id === card.id) {
+            this.playerHand.push(this.faceUpCard);
+            this.faceUpCard = null;
+        } else if (this.faceDownCard && this.faceDownCard.id === card.id) {
+            this.playerHand.push(this.faceDownCard);
+            this.faceDownCard = null;
+        }
+        
+        this.renderPlayerHand();
+        this.renderPlaySlots();
+        this.updateConfirmButton();
+        this.draggedCard = null;
+    }
+
+    renderPlaySlots() {
+        const faceUpSlot = document.querySelector('#face-up-slot .slot-content');
+        const faceDownSlot = document.querySelector('#face-down-slot .slot-content');
+        
+        faceUpSlot.innerHTML = '';
+        faceDownSlot.innerHTML = '';
+        
+        if (this.faceUpCard) {
+            const cardEl = createCardElement(this.faceUpCard);
+            cardEl.draggable = true;
+            cardEl.addEventListener('dragstart', (e) => this.handleDragStart(e, this.faceUpCard));
+            cardEl.addEventListener('dragend', (e) => this.handleDragEnd(e));
+            faceUpSlot.appendChild(cardEl);
+        }
+        
+        if (this.faceDownCard) {
+            const cardEl = createCardElement(this.faceDownCard);
+            cardEl.draggable = true;
+            cardEl.addEventListener('dragstart', (e) => this.handleDragStart(e, this.faceDownCard));
+            cardEl.addEventListener('dragend', (e) => this.handleDragEnd(e));
+            faceDownSlot.appendChild(cardEl);
+        }
+    }
+
+    updateConfirmButton() {
+        const btn = document.getElementById('confirm-play-btn');
+        btn.disabled = !(this.faceUpCard && this.faceDownCard);
     }
 
     renderAIHand() {
@@ -136,7 +311,6 @@ class ChaseOnGame {
         
         for (const type in grouped) {
             const cards = grouped[type];
-            const count = cards.length;
             cards.forEach((card, idx) => {
                 const highlightIdx = Math.min(idx, 2);
                 const cardEl = createCardElement(card, { mini: true, highlightIndex: highlightIdx });
@@ -145,102 +319,23 @@ class ChaseOnGame {
         }
     }
 
-    selectCard(card) {
-        if (!this.isPlayerTurn || this.gameOver) return;
-        
-        const index = this.selectedCards.findIndex(c => c.id === card.id);
-        
-        if (index >= 0) {
-            this.selectedCards.splice(index, 1);
-        } else {
-            if (this.selectedCards.length >= 2) {
-                this.setMessage('Deselect a card first, or click Clear.');
-                return;
-            }
-            
-            if (this.selectedCards.length === 1 && this.selectedCards[0].type === card.type) {
-                this.setMessage('Cards must have different names!');
-                return;
-            }
-            
-            this.selectedCards.push(card);
-        }
-        
-        this.updateCardSelectionState();
-        this.updatePlayButtons();
-    }
-
-    updateCardSelectionState() {
-        const handEl = document.getElementById('player-hand');
-        const cards = handEl.querySelectorAll('.card');
-        
-        cards.forEach(cardEl => {
-            const cardId = parseInt(cardEl.dataset.cardId);
-            const isSelected = this.selectedCards.some(c => c.id === cardId);
-            cardEl.classList.toggle('selected', isSelected);
-            
-            if (this.selectedCards.length === 1 && !isSelected) {
-                const cardType = cardEl.dataset.cardType;
-                cardEl.classList.toggle('disabled', this.selectedCards[0].type === cardType);
-            } else {
-                cardEl.classList.remove('disabled');
-            }
-        });
-    }
-
-    updatePlayButtons() {
-        document.getElementById('confirm-play-btn').disabled = this.selectedCards.length !== 2;
-        document.getElementById('clear-play-btn').disabled = this.selectedCards.length === 0;
-    }
-
     confirmPlay() {
-        if (this.selectedCards.length !== 2) return;
-        this.showFaceUpChoice();
-    }
-
-    showFaceUpChoice() {
-        const modal = document.getElementById('choice-modal');
-        const title = document.getElementById('choice-title');
-        const desc = document.getElementById('choice-description');
-        const cardsContainer = document.getElementById('choice-cards');
+        if (!this.faceUpCard || !this.faceDownCard) return;
         
-        title.textContent = 'Choose Face-Up Card';
-        desc.textContent = 'Which card to show? (Other will be face-down)';
-        cardsContainer.innerHTML = '';
-        
-        this.selectedCards.forEach(card => {
-            const cardEl = createCardElement(card, { clickable: true });
-            cardEl.addEventListener('click', () => this.selectFaceUp(card));
-            cardsContainer.appendChild(cardEl);
-        });
-        
-        modal.classList.remove('hidden');
-    }
-
-    selectFaceUp(card) {
-        this.faceUpCard = card;
-        this.faceDownCard = this.selectedCards.find(c => c.id !== card.id);
-        
-        document.getElementById('choice-modal').classList.add('hidden');
-        
-        // Remove from hand
-        this.playerHand = this.playerHand.filter(c => 
-            c.id !== this.faceUpCard.id && c.id !== this.faceDownCard.id
-        );
-        
+        // Remove cards from hand (already done during drag)
         // Draw new cards
         this.drawCards('player', 2);
         this.renderPlayerHand();
         
-        // Show played cards
-        this.showPlayedCards();
+        // Show played cards (face-down is shown to player but will be hidden text)
+        this.showPlayedCardsForAI();
         
         // AI chooses
         this.setMessage('AI is choosing...');
         setTimeout(() => this.aiChoosesCard(), 1200);
     }
 
-    showPlayedCards() {
+    showPlayedCardsForAI() {
         const faceUpSlot = document.querySelector('#face-up-slot .slot-content');
         const faceDownSlot = document.querySelector('#face-down-slot .slot-content');
         
@@ -274,7 +369,7 @@ class ChaseOnGame {
         setTimeout(() => this.resolveMoves(playerGets, aiChoice, true), 1200);
     }
 
-    resolveMoves(playerCard, aiCard, isPlayerTurn) {
+    resolveMoves(playerCard, aiCard, wasPlayerTurn) {
         const playerCount = countCardType(this.playerRecruited, playerCard.type);
         const aiCount = countCardType(this.aiRecruited, aiCard.type);
         
@@ -308,12 +403,7 @@ class ChaseOnGame {
         const aiMove = getMovementValue(aiCard, aiCount);
         
         // Move positions (positive = toward opponent)
-        const oldPlayerPos = this.playerPosition;
-        const oldAiPos = this.aiPosition;
-        
-        // Player moves toward AI (clockwise from position 1 toward 8)
         this.playerPosition = this.wrapPosition(this.playerPosition + playerMove);
-        // AI moves toward player (counter-clockwise from position 8 toward 1)
         this.aiPosition = this.wrapPosition(this.aiPosition - aiMove);
         
         this.updateMeeplePositions();
@@ -325,11 +415,11 @@ class ChaseOnGame {
         
         // Check catch conditions
         setTimeout(() => {
-            if (this.checkCatchCondition()) return;
+            if (this.checkCatchCondition(wasPlayerTurn)) return;
             
             this.clearPlayArea();
             
-            if (isPlayerTurn) {
+            if (wasPlayerTurn) {
                 this.startAITurn();
             } else {
                 this.startPlayerTurn();
@@ -338,41 +428,32 @@ class ChaseOnGame {
     }
 
     wrapPosition(pos) {
-        // Circular board: 1-14
         while (pos < 1) pos += this.BOARD_SIZE;
         while (pos > this.BOARD_SIZE) pos -= this.BOARD_SIZE;
         return pos;
     }
 
     getDistance(from) {
-        // Calculate shortest distance on circular board
-        // Player chases AI clockwise, AI chases player counter-clockwise
         if (from === 'player') {
-            // Player at pos 1 chasing AI at pos 8 = 7 steps clockwise
             let dist = this.aiPosition - this.playerPosition;
             if (dist < 0) dist += this.BOARD_SIZE;
             return dist;
         } else {
-            // AI at pos 8 chasing player at pos 1 = 7 steps counter-clockwise
             let dist = this.playerPosition - this.aiPosition;
             if (dist < 0) dist += this.BOARD_SIZE;
             return dist;
         }
     }
 
-    checkCatchCondition() {
-        // Check if meeples are on same position or have passed each other
+    checkCatchCondition(wasPlayerTurn) {
         if (this.playerPosition === this.aiPosition) {
-            // Same position - whoever's turn it was wins
-            this.endGame('Spies collided! Active player wins! 🎉', this.isPlayerTurn);
+            this.endGame('Spies collided! Active player wins! 🎉', wasPlayerTurn);
             return true;
         }
         
-        // Check if player caught AI (player's forward direction)
         const playerDist = this.getDistance('player');
         const aiDist = this.getDistance('ai');
         
-        // If distances are very large (>10), someone passed through
         if (playerDist > 10) {
             this.endGame('You caught the AI spy! YOU WIN! 🎉', true);
             return true;
@@ -382,7 +463,6 @@ class ChaseOnGame {
             return true;
         }
         
-        // Check deck exhaustion
         if (this.deck.length === 0) {
             if (this.playerHand.length < 2 || this.aiHand.length < 2) {
                 const playerCloser = playerDist < aiDist;
@@ -391,7 +471,7 @@ class ChaseOnGame {
                 } else if (aiDist < playerDist) {
                     this.endGame('Deck empty - AI is closer! YOU LOSE! 💀', false);
                 } else {
-                    this.endGame('Deck empty - Tie goes to active player!', this.isPlayerTurn);
+                    this.endGame('Deck empty - Tie goes to active player!', wasPlayerTurn);
                 }
                 return true;
             }
@@ -404,12 +484,10 @@ class ChaseOnGame {
         const board = document.getElementById('board');
         const spaces = board.querySelectorAll('.board-space');
         
-        // Clear highlights
         spaces.forEach(s => {
             s.classList.remove('has-green', 'has-blue');
         });
         
-        // Find positions
         let playerSpace, aiSpace;
         spaces.forEach(space => {
             const pos = parseInt(space.dataset.position);
@@ -423,13 +501,10 @@ class ChaseOnGame {
             }
         });
         
-        // Position meeples
         const playerMeeple = document.getElementById('player-meeple');
         const aiMeeple = document.getElementById('ai-meeple');
         
         if (playerSpace) {
-            const rect = playerSpace.getBoundingClientRect();
-            const boardRect = board.getBoundingClientRect();
             playerMeeple.style.left = (playerSpace.offsetLeft + 10) + 'px';
             playerMeeple.style.top = (playerSpace.offsetTop + 10) + 'px';
         }
@@ -445,14 +520,24 @@ class ChaseOnGame {
         document.getElementById('ai-position').textContent = this.aiPosition;
     }
 
+    updateTurnIndicator() {
+        const indicator = document.getElementById('turn-indicator');
+        const instruction = document.getElementById('play-instruction');
+        
+        if (this.isPlayerTurn) {
+            indicator.textContent = "Your Turn";
+            indicator.classList.remove('ai-turn');
+            instruction.textContent = 'Drag 2 different cards to the slots';
+        } else {
+            indicator.textContent = "AI's Turn";
+            indicator.classList.add('ai-turn');
+            instruction.textContent = 'AI is playing...';
+        }
+    }
+
     startAITurn() {
         this.isPlayerTurn = false;
-        this.selectedCards = [];
-        
-        document.getElementById('turn-indicator').textContent = "AI's Turn";
-        document.getElementById('turn-indicator').classList.add('ai-turn');
-        document.getElementById('play-instruction').textContent = 'AI is playing...';
-        
+        this.updateTurnIndicator();
         this.setMessage('AI is thinking...');
         this.renderPlayerHand();
         
@@ -463,7 +548,7 @@ class ChaseOnGame {
         const play = this.ai.playTurn();
         
         if (!play) {
-            this.checkCatchCondition();
+            this.checkCatchCondition(false);
             return;
         }
         
@@ -478,12 +563,28 @@ class ChaseOnGame {
         this.drawCards('ai', 2);
         this.renderAIHand();
         
-        // Show played cards
-        this.showPlayedCards();
+        // Show only face-up card, face-down remains hidden
+        this.showAIPlayedCards();
         
         this.setMessage(`AI played ${this.faceUpCard.name} face-up. Choose one card!`);
         
         setTimeout(() => this.playerChoosesCard(), 1000);
+    }
+
+    showAIPlayedCards() {
+        const faceUpSlot = document.querySelector('#face-up-slot .slot-content');
+        const faceDownSlot = document.querySelector('#face-down-slot .slot-content');
+        
+        faceUpSlot.innerHTML = '';
+        faceDownSlot.innerHTML = '';
+        
+        // Show face-up card
+        faceUpSlot.appendChild(createCardElement(this.faceUpCard));
+        
+        // Face-down stays hidden
+        const hiddenCard = document.createElement('div');
+        hiddenCard.className = 'card card-back';
+        faceDownSlot.appendChild(hiddenCard);
     }
 
     playerChoosesCard() {
@@ -496,12 +597,12 @@ class ChaseOnGame {
         desc.textContent = 'Pick one to add to your collection:';
         cardsContainer.innerHTML = '';
         
-        // Reveal face-down card
+        // NOW reveal face-down card in the slot
         const faceDownSlot = document.querySelector('#face-down-slot .slot-content');
         faceDownSlot.innerHTML = '';
         faceDownSlot.appendChild(createCardElement(this.faceDownCard));
         
-        // Show both as choices
+        // Show both as choices in modal
         [this.faceUpCard, this.faceDownCard].forEach(card => {
             const playerCount = countCardType(this.playerRecruited, card.type);
             const cardEl = createCardElement(card, { clickable: true, highlightIndex: Math.min(playerCount, 2) });
@@ -530,15 +631,14 @@ class ChaseOnGame {
 
     startPlayerTurn() {
         this.isPlayerTurn = true;
-        this.selectedCards = [];
+        this.faceUpCard = null;
+        this.faceDownCard = null;
         
-        document.getElementById('turn-indicator').textContent = "Your Turn";
-        document.getElementById('turn-indicator').classList.remove('ai-turn');
-        document.getElementById('play-instruction').textContent = 'Select 2 different cards to play';
-        
-        this.setMessage('Your turn! Select 2 cards with different names.');
+        this.updateTurnIndicator();
+        this.setMessage('Your turn! Drag 2 cards with different names to the slots.');
         this.renderPlayerHand();
-        this.updatePlayButtons();
+        this.renderPlaySlots();
+        this.updateConfirmButton();
     }
 
     clearPlayArea() {
@@ -546,12 +646,6 @@ class ChaseOnGame {
         document.querySelector('#face-down-slot .slot-content').innerHTML = '';
         this.faceUpCard = null;
         this.faceDownCard = null;
-    }
-
-    clearSelection() {
-        this.selectedCards = [];
-        this.updateCardSelectionState();
-        this.updatePlayButtons();
     }
 
     drawCards(player, count) {
@@ -585,6 +679,11 @@ class ChaseOnGame {
         modal.classList.remove('hidden');
     }
 
+    closeGameOver() {
+        document.getElementById('gameover-modal').classList.add('hidden');
+        document.getElementById('play-again-btn').classList.remove('hidden');
+    }
+
     restart() {
         // Reset state
         this.deck = [];
@@ -596,22 +695,20 @@ class ChaseOnGame {
         this.aiPosition = this.AI_START;
         this.playerRedraws = 4;
         this.isPlayerTurn = true;
-        this.selectedCards = [];
         this.faceUpCard = null;
         this.faceDownCard = null;
         this.gameOver = false;
+        this.draggedCard = null;
         
         // Reset UI
         document.getElementById('gameover-modal').classList.add('hidden');
+        document.getElementById('play-again-btn').classList.add('hidden');
         this.clearPlayArea();
         document.getElementById('player-recruited').innerHTML = '';
         document.getElementById('ai-recruited').innerHTML = '';
-        document.getElementById('turn-indicator').textContent = "Your Turn";
-        document.getElementById('turn-indicator').classList.remove('ai-turn');
-        document.getElementById('play-instruction').textContent = 'Select 2 different cards to play';
         
-        this.initBoard();
-        this.initGame();
+        // Start with coin flip
+        this.showCoinFlip();
     }
 }
 
@@ -627,7 +724,7 @@ window.addEventListener('load', () => {
 
 // Handle window resize for meeple positions
 window.addEventListener('resize', () => {
-    if (window.game) {
+    if (window.game && !window.game.gameOver) {
         window.game.updateMeeplePositions();
     }
 });
