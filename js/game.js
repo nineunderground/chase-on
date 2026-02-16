@@ -535,7 +535,6 @@ class ChaseOnGame {
         
         // Condition 1: Both players on same position
         if (playerNewPos === aiNewPos) {
-            // Player who moved more wins
             const playerAbsMove = Math.abs(playerMove);
             const aiAbsMove = Math.abs(aiMove);
             if (playerAbsMove > aiAbsMove) {
@@ -548,37 +547,43 @@ class ChaseOnGame {
             return true;
         }
         
-        // Condition 2: Check if someone overtook the other
-        const distBefore = this.clockwiseDistance(playerOldPos, aiOldPos);
-        const distAfter = this.clockwiseDistance(playerNewPos, aiNewPos);
+        // Condition 2: Check if someone's movement path crossed through opponent's position
+        // Player catches AI if player moved through AI's position
+        const playerCaughtAI = this.didCrossPosition(playerOldPos, playerMove, aiNewPos);
+        const aiCaughtPlayer = this.didCrossPosition(aiOldPos, aiMove, playerNewPos);
         
-        const halfBoard = this.BOARD_SIZE / 2; // 7
-        
-        const playerWasBehind = distBefore > 0 && distBefore <= halfBoard;
-        const playerIsNowAhead = distAfter > halfBoard || distAfter === 0;
-        
-        const playerWasAhead = distBefore > halfBoard;
-        const playerIsNowBehind = distAfter > 0 && distAfter <= halfBoard;
-        
-        if (playerWasBehind && playerIsNowAhead) {
-            this.endGame('Blue spy overtook Green!', true);
+        if (playerCaughtAI && aiCaughtPlayer) {
+            // Both crossed each other - whoever moved more wins
+            if (Math.abs(playerMove) > Math.abs(aiMove)) {
+                this.endGame('Both crossed - Blue moved more!', true);
+            } else if (Math.abs(aiMove) > Math.abs(playerMove)) {
+                this.endGame('Both crossed - Green moved more!', false);
+            } else {
+                this.endGame('Both crossed equally! It\'s a tie!', true);
+            }
             return true;
         }
         
-        if (playerWasAhead && playerIsNowBehind) {
-            this.endGame('Green spy overtook Blue!', false);
+        if (playerCaughtAI) {
+            this.endGame('Blue spy caught Green!', true);
+            return true;
+        }
+        
+        if (aiCaughtPlayer) {
+            this.endGame('Green spy caught Blue!', false);
             return true;
         }
         
         // Condition 3: Deck exhausted and can't play
         if (this.deck.length === 0) {
             if (this.playerHand.length < 2 || this.aiHand.length < 2) {
-                const playerDistToAI = this.clockwiseDistance(playerNewPos, aiNewPos);
-                const aiDistToPlayer = this.clockwiseDistance(aiNewPos, playerNewPos);
+                // Shortest distance wins
+                const playerDist = this.shortestDistance(playerNewPos, aiNewPos);
+                const aiDist = this.shortestDistance(aiNewPos, playerNewPos);
                 
-                if (playerDistToAI < aiDistToPlayer) {
+                if (playerDist < aiDist) {
                     this.endGame('Deck empty - Blue is closer!', true);
-                } else if (aiDistToPlayer < playerDistToAI) {
+                } else if (aiDist < playerDist) {
                     this.endGame('Deck empty - Green is closer!', false);
                 } else {
                     this.endGame('Deck empty - Equal distance!', true);
@@ -588,6 +593,30 @@ class ChaseOnGame {
         }
         
         return false;
+    }
+    
+    // Check if moving from startPos by moveAmount crosses through targetPos
+    didCrossPosition(startPos, moveAmount, targetPos) {
+        if (moveAmount === 0) return false;
+        
+        // Generate all positions passed through during movement
+        const direction = moveAmount > 0 ? 1 : -1;
+        const steps = Math.abs(moveAmount);
+        
+        for (let i = 1; i <= steps; i++) {
+            const pos = this.wrapPosition(startPos + (i * direction));
+            if (pos === targetPos) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Shortest distance between two positions on circular board
+    shortestDistance(pos1, pos2) {
+        const clockwise = this.clockwiseDistance(pos1, pos2);
+        const counterClockwise = this.BOARD_SIZE - clockwise;
+        return Math.min(clockwise, counterClockwise);
     }
     
     // Calculate clockwise distance from pos1 to pos2
@@ -811,6 +840,21 @@ class ChaseOnGame {
     closeGameOver() {
         document.getElementById('gameover-modal').classList.add('hidden');
         document.getElementById('play-again-btn').classList.remove('hidden');
+        
+        // Disable all game buttons
+        document.getElementById('confirm-play-btn').disabled = true;
+        document.getElementById('rules-btn').disabled = true;
+        
+        // Make cards non-interactive
+        document.querySelectorAll('#player-hand .card').forEach(card => {
+            card.draggable = false;
+            card.classList.add('disabled');
+        });
+        
+        // Clear play area visual states
+        document.getElementById('play-area').classList.remove('ready-to-confirm');
+        document.getElementById('face-up-slot').classList.remove('filled');
+        document.getElementById('face-down-slot').classList.remove('filled');
     }
 
     restart() {
