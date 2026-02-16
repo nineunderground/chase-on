@@ -450,12 +450,15 @@ class ChaseOnGame {
             return;
         }
         
+        // Store old positions
+        const playerOldPos = this.playerPosition;
+        const aiOldPos = this.aiPosition;
+        
         // Calculate movements
         const playerMove = getMovementValue(playerCard, playerCount);
         const aiMove = getMovementValue(aiCard, aiCount);
         
         // Move positions: positive = clockwise, negative = counter-clockwise
-        // Both players move in the same direction system
         this.playerPosition = this.wrapPosition(this.playerPosition + playerMove);
         this.aiPosition = this.wrapPosition(this.aiPosition + aiMove);
         
@@ -466,9 +469,9 @@ class ChaseOnGame {
         const aiMoveText = aiMove >= 0 ? `+${aiMove}` : `${aiMove}`;
         this.setMessage(`You moved ${playerMoveText}. AI moved ${aiMoveText}.`);
         
-        // Check catch conditions
+        // Check catch conditions with movement info
         setTimeout(() => {
-            if (this.checkCatchCondition(wasPlayerTurn)) return;
+            if (this.checkCatchCondition(playerOldPos, aiOldPos, playerMove, aiMove)) return;
             
             this.clearPlayArea();
             
@@ -501,39 +504,77 @@ class ChaseOnGame {
         }
     }
 
-    checkCatchCondition(wasPlayerTurn) {
-        if (this.playerPosition === this.aiPosition) {
-            this.endGame('Spies collided! Active player wins! 🎉', wasPlayerTurn);
+    checkCatchCondition(playerOldPos, aiOldPos, playerMove, aiMove) {
+        const playerNewPos = this.playerPosition;
+        const aiNewPos = this.aiPosition;
+        
+        // Condition 1: Both players on same position
+        if (playerNewPos === aiNewPos) {
+            // Player who moved more wins
+            const playerAbsMove = Math.abs(playerMove);
+            const aiAbsMove = Math.abs(aiMove);
+            if (playerAbsMove > aiAbsMove) {
+                this.endGame('Same position - You moved more! YOU WIN! 🎉', true);
+            } else if (aiAbsMove > playerAbsMove) {
+                this.endGame('Same position - AI moved more! YOU LOSE! 💀', false);
+            } else {
+                // Equal movement - could be a tie, active player wins
+                this.endGame('Same position - Tie! Both moved same distance.', true);
+            }
             return true;
         }
         
-        const playerDist = this.getDistance('player');
-        const aiDist = this.getDistance('ai');
+        // Condition 2: Check if someone overtook the other
+        // Calculate relative positions before and after (clockwise distance from player to AI)
+        const distBefore = this.clockwiseDistance(playerOldPos, aiOldPos);
+        const distAfter = this.clockwiseDistance(playerNewPos, aiNewPos);
         
-        if (playerDist > 10) {
-            this.endGame('You caught the AI spy! YOU WIN! 🎉', true);
+        // If player was behind AI (dist <= 7) and is now ahead (dist > 7), player overtook
+        // If player was ahead (dist > 7) and is now behind (dist <= 7), AI overtook
+        const halfBoard = this.BOARD_SIZE / 2; // 7
+        
+        const playerWasBehind = distBefore > 0 && distBefore <= halfBoard;
+        const playerIsNowAhead = distAfter > halfBoard || distAfter === 0;
+        
+        const playerWasAhead = distBefore > halfBoard;
+        const playerIsNowBehind = distAfter > 0 && distAfter <= halfBoard;
+        
+        if (playerWasBehind && playerIsNowAhead) {
+            this.endGame('You overtook the AI spy! YOU WIN! 🎉', true);
             return true;
         }
-        if (aiDist > 10) {
-            this.endGame('AI caught you! YOU LOSE! 💀', false);
+        
+        if (playerWasAhead && playerIsNowBehind) {
+            this.endGame('AI overtook you! YOU LOSE! 💀', false);
             return true;
         }
         
+        // Condition 3: Deck exhausted and can't play
         if (this.deck.length === 0) {
             if (this.playerHand.length < 2 || this.aiHand.length < 2) {
-                const playerCloser = playerDist < aiDist;
-                if (playerCloser) {
+                // Whoever is closer to catching the other wins
+                const playerDistToAI = this.clockwiseDistance(playerNewPos, aiNewPos);
+                const aiDistToPlayer = this.clockwiseDistance(aiNewPos, playerNewPos);
+                
+                if (playerDistToAI < aiDistToPlayer) {
                     this.endGame('Deck empty - You are closer! YOU WIN! 🎉', true);
-                } else if (aiDist < playerDist) {
+                } else if (aiDistToPlayer < playerDistToAI) {
                     this.endGame('Deck empty - AI is closer! YOU LOSE! 💀', false);
                 } else {
-                    this.endGame('Deck empty - Tie goes to active player!', wasPlayerTurn);
+                    this.endGame('Deck empty - Equal distance! It\'s a draw!', true);
                 }
                 return true;
             }
         }
         
         return false;
+    }
+    
+    // Calculate clockwise distance from pos1 to pos2
+    clockwiseDistance(pos1, pos2) {
+        let dist = pos2 - pos1;
+        if (dist <= 0) dist += this.BOARD_SIZE;
+        return dist;
     }
 
     updateMeeplePositions() {
