@@ -39,7 +39,7 @@ body {
 .player-area {
     background: rgba(255,255,255,0.08);
     border-radius: 12px;
-    padding: 12px;
+    padding: 8px 12px;
 }
 
 .green-area {
@@ -73,9 +73,9 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     flex-wrap: wrap;
-    min-height: 50px;
+    min-height: 40px;
 }
 
 .collection-label {
