@@ -683,13 +683,13 @@ class ChaseOnGame {
         const aiMeeple = document.getElementById('ai-meeple');
         
         if (playerSpace) {
-            playerMeeple.style.left = (playerSpace.offsetLeft + 10) + 'px';
-            playerMeeple.style.top = (playerSpace.offsetTop + 10) + 'px';
+            playerMeeple.style.left = (playerSpace.offsetLeft + playerSpace.offsetWidth / 2) + 'px';
+            playerMeeple.style.top = (playerSpace.offsetTop + playerSpace.offsetHeight / 2) + 'px';
         }
         
         if (aiSpace) {
-            aiMeeple.style.left = (aiSpace.offsetLeft + 10) + 'px';
-            aiMeeple.style.top = (aiSpace.offsetTop + 10) + 'px';
+            aiMeeple.style.left = (aiSpace.offsetLeft + aiSpace.offsetWidth / 2) + 'px';
+            aiMeeple.style.top = (aiSpace.offsetTop + aiSpace.offsetHeight / 2) + 'px';
         }
     }
 
