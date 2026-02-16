@@ -4,8 +4,8 @@ class ChaseOnGame {
     constructor() {
         // Board configuration - circular with 14 spots
         this.BOARD_SIZE = 14;
-        this.PLAYER_START = 1;  // Green starts at position 1
-        this.AI_START = 8;      // Blue starts at position 8
+        this.PLAYER_START = 8;  // Blue (human) starts at position 8
+        this.AI_START = 1;      // Green (AI) starts at position 1
         
         // Game state
         this.deck = [];
@@ -48,11 +48,11 @@ class ChaseOnGame {
             // Show result after animation
             setTimeout(() => {
                 if (this.isPlayerTurn) {
-                    result.textContent = '🟢 You go first!';
-                    result.style.color = '#27ae60';
-                } else {
-                    result.textContent = '🔵 AI goes first!';
+                    result.textContent = '🔵 You go first!';
                     result.style.color = '#3498db';
+                } else {
+                    result.textContent = '🟢 AI goes first!';
+                    result.style.color = '#27ae60';
                 }
                 
                 // Start game after showing result
@@ -89,10 +89,10 @@ class ChaseOnGame {
             space.style.left = x + 'px';
             space.style.top = y + 'px';
             
-            if (i === this.PLAYER_START) {
+            if (i === this.AI_START) {
                 space.classList.add('home-green');
                 space.innerHTML = '🏠';
-            } else if (i === this.AI_START) {
+            } else if (i === this.PLAYER_START) {
                 space.classList.add('home-blue');
                 space.innerHTML = '🏠';
             } else {
@@ -105,12 +105,12 @@ class ChaseOnGame {
         // Create meeples
         const playerMeeple = document.createElement('div');
         playerMeeple.id = 'player-meeple';
-        playerMeeple.className = 'meeple green';
+        playerMeeple.className = 'meeple blue';
         board.appendChild(playerMeeple);
         
         const aiMeeple = document.createElement('div');
         aiMeeple.id = 'ai-meeple';
-        aiMeeple.className = 'meeple blue';
+        aiMeeple.className = 'meeple green';
         board.appendChild(aiMeeple);
         
         this.updateMeeplePositions();
@@ -312,13 +312,25 @@ class ChaseOnGame {
             grouped[card.type].push(card);
         });
         
+        // Create stacked card groups
         for (const type in grouped) {
             const cards = grouped[type];
+            const stackDiv = document.createElement('div');
+            stackDiv.className = 'card-stack';
+            
             cards.forEach((card, idx) => {
                 const highlightIdx = Math.min(idx, 2);
                 const cardEl = createCardElement(card, { mini: true, highlightIndex: highlightIdx });
-                container.appendChild(cardEl);
+                cardEl.style.position = idx > 0 ? 'absolute' : 'relative';
+                cardEl.style.top = (idx * 6) + 'px';
+                cardEl.style.left = '0';
+                cardEl.style.zIndex = idx;
+                stackDiv.appendChild(cardEl);
             });
+            
+            // Set stack height based on number of cards
+            stackDiv.style.height = (70 + (cards.length - 1) * 6) + 'px';
+            container.appendChild(stackDiv);
         }
     }
 
@@ -496,11 +508,11 @@ class ChaseOnGame {
             const pos = parseInt(space.dataset.position);
             if (pos === this.playerPosition) {
                 playerSpace = space;
-                space.classList.add('has-green');
+                space.classList.add('has-blue');
             }
             if (pos === this.aiPosition) {
                 aiSpace = space;
-                space.classList.add('has-blue');
+                space.classList.add('has-green');
             }
         });
         

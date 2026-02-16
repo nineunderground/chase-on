@@ -14,11 +14,11 @@
         </header>
 
         <div id="game-area">
-            <!-- AI Area (Blue) -->
-            <div id="ai-area" class="player-area blue-area">
+            <!-- AI Area (Green) -->
+            <div id="ai-area" class="player-area green-area">
                 <div class="player-header">
-                    <span class="player-label">🤖 AI Spy (Blue)</span>
-                    <span class="player-position">Position: <span id="ai-position">8</span></span>
+                    <span class="player-label">🤖 AI Spy (Green)</span>
+                    <span class="player-position">Position: <span id="ai-position">1</span></span>
                 </div>
                 <div class="card-collection">
                     <span class="collection-label">Recruited:</span>
@@ -55,11 +55,11 @@
                 </div>
             </div>
 
-            <!-- Player Area (Green) -->
-            <div id="player-area" class="player-area green-area">
+            <!-- Player Area (Blue) -->
+            <div id="player-area" class="player-area blue-area">
                 <div class="player-header">
-                    <span class="player-label">🕵️ You (Green)</span>
-                    <span class="player-position">Position: <span id="player-position">1</span></span>
+                    <span class="player-label">🕵️ You (Blue)</span>
+                    <span class="player-position">Position: <span id="player-position">8</span></span>
                 </div>
                 <div class="card-collection">
                     <span class="collection-label">Recruited:</span>
@@ -99,8 +99,8 @@
             <div class="modal-content coin-content">
                 <h2>Who Goes First?</h2>
                 <div id="coin" class="coin">
-                    <div class="coin-face coin-green">🟢</div>
                     <div class="coin-face coin-blue">🔵</div>
+                    <div class="coin-face coin-green">🟢</div>
                 </div>
                 <p id="coin-result"></p>
             </div>
@@ -148,6 +148,12 @@
                     <li><strong>Double Agent:</strong> -1/6/-1 - Risky swings!</li>
                     <li><strong>Sidekick:</strong> Always 4</li>
                     <li><strong>Mole:</strong> Always -3</li>
+                </ul>
+
+                <h3>🎮 Players</h3>
+                <ul>
+                    <li><strong>You:</strong> Blue spy, starts at position 8</li>
+                    <li><strong>AI:</strong> Green spy, starts at position 1</li>
                 </ul>
             </div>
         </div>
