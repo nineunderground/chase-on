@@ -324,7 +324,17 @@ class ChaseOnGame {
 
     updateConfirmButton() {
         const btn = document.getElementById('confirm-play-btn');
-        btn.disabled = !(this.faceUpCard && this.faceDownCard);
+        const playArea = document.getElementById('play-area');
+        const faceUpSlot = document.getElementById('face-up-slot');
+        const faceDownSlot = document.getElementById('face-down-slot');
+        
+        const ready = this.faceUpCard && this.faceDownCard;
+        btn.disabled = !ready;
+        
+        // Visual feedback when ready
+        playArea.classList.toggle('ready-to-confirm', ready);
+        faceUpSlot.classList.toggle('filled', !!this.faceUpCard);
+        faceDownSlot.classList.toggle('filled', !!this.faceDownCard);
     }
 
     renderAIHand() {
@@ -374,17 +384,32 @@ class ChaseOnGame {
     confirmPlay() {
         if (!this.faceUpCard || !this.faceDownCard) return;
         
-        // Remove cards from hand (already done during drag)
-        // Draw new cards
-        this.drawCards('player', 2);
-        this.renderPlayerHand();
+        // Add confirming animation to cards in slots
+        const faceUpSlot = document.querySelector('#face-up-slot .slot-content .card');
+        const faceDownSlot = document.querySelector('#face-down-slot .slot-content .card');
         
-        // Show played cards (face-down is shown to player but will be hidden text)
-        this.showPlayedCardsForAI();
+        if (faceUpSlot) faceUpSlot.classList.add('confirming');
+        if (faceDownSlot) faceDownSlot.classList.add('confirming');
         
-        // AI chooses
-        this.setMessage('AI is choosing...');
-        setTimeout(() => this.aiChoosesCard(), 1200);
+        // Disable button during animation
+        document.getElementById('confirm-play-btn').disabled = true;
+        document.getElementById('play-area').classList.remove('ready-to-confirm');
+        
+        this.setMessage('Playing cards...');
+        
+        // Wait for animation, then proceed
+        setTimeout(() => {
+            // Draw new cards
+            this.drawCards('player', 2);
+            this.renderPlayerHand();
+            
+            // Show played cards for AI to choose
+            this.showPlayedCardsForAI();
+            
+            // AI chooses
+            this.setMessage('AI is choosing...');
+            setTimeout(() => this.aiChoosesCard(), 1000);
+        }, 500);
     }
 
     showPlayedCardsForAI() {
@@ -514,23 +539,19 @@ class ChaseOnGame {
             const playerAbsMove = Math.abs(playerMove);
             const aiAbsMove = Math.abs(aiMove);
             if (playerAbsMove > aiAbsMove) {
-                this.endGame('Same position - You moved more! YOU WIN! 🎉', true);
+                this.endGame('Same position - Blue moved more!', true);
             } else if (aiAbsMove > playerAbsMove) {
-                this.endGame('Same position - AI moved more! YOU LOSE! 💀', false);
+                this.endGame('Same position - Green moved more!', false);
             } else {
-                // Equal movement - could be a tie, active player wins
-                this.endGame('Same position - Tie! Both moved same distance.', true);
+                this.endGame('Same position - Equal movement! It\'s a tie!', true);
             }
             return true;
         }
         
         // Condition 2: Check if someone overtook the other
-        // Calculate relative positions before and after (clockwise distance from player to AI)
         const distBefore = this.clockwiseDistance(playerOldPos, aiOldPos);
         const distAfter = this.clockwiseDistance(playerNewPos, aiNewPos);
         
-        // If player was behind AI (dist <= 7) and is now ahead (dist > 7), player overtook
-        // If player was ahead (dist > 7) and is now behind (dist <= 7), AI overtook
         const halfBoard = this.BOARD_SIZE / 2; // 7
         
         const playerWasBehind = distBefore > 0 && distBefore <= halfBoard;
@@ -540,28 +561,27 @@ class ChaseOnGame {
         const playerIsNowBehind = distAfter > 0 && distAfter <= halfBoard;
         
         if (playerWasBehind && playerIsNowAhead) {
-            this.endGame('You overtook the AI spy! YOU WIN! 🎉', true);
+            this.endGame('Blue spy overtook Green!', true);
             return true;
         }
         
         if (playerWasAhead && playerIsNowBehind) {
-            this.endGame('AI overtook you! YOU LOSE! 💀', false);
+            this.endGame('Green spy overtook Blue!', false);
             return true;
         }
         
         // Condition 3: Deck exhausted and can't play
         if (this.deck.length === 0) {
             if (this.playerHand.length < 2 || this.aiHand.length < 2) {
-                // Whoever is closer to catching the other wins
                 const playerDistToAI = this.clockwiseDistance(playerNewPos, aiNewPos);
                 const aiDistToPlayer = this.clockwiseDistance(aiNewPos, playerNewPos);
                 
                 if (playerDistToAI < aiDistToPlayer) {
-                    this.endGame('Deck empty - You are closer! YOU WIN! 🎉', true);
+                    this.endGame('Deck empty - Blue is closer!', true);
                 } else if (aiDistToPlayer < playerDistToAI) {
-                    this.endGame('Deck empty - AI is closer! YOU LOSE! 💀', false);
+                    this.endGame('Deck empty - Green is closer!', false);
                 } else {
-                    this.endGame('Deck empty - Equal distance! It\'s a draw!', true);
+                    this.endGame('Deck empty - Equal distance!', true);
                 }
                 return true;
             }
@@ -774,9 +794,16 @@ class ChaseOnGame {
         const title = document.getElementById('gameover-title');
         const msg = document.getElementById('gameover-message');
         
-        title.textContent = playerWins ? '🎉 Victory!' : '💀 Defeat';
-        title.style.color = playerWins ? '#27ae60' : '#e74c3c';
-        msg.textContent = message;
+        // Blue = human player, Green = AI
+        if (playerWins) {
+            title.textContent = '🎉 Victory!';
+            title.style.color = '#3498db'; // Blue
+            msg.textContent = message + ' You win!';
+        } else {
+            title.textContent = '💀 Defeat';
+            title.style.color = '#e74c3c'; // Red for defeat
+            msg.textContent = message + ' AI wins!';
+        }
         
         modal.classList.remove('hidden');
     }
