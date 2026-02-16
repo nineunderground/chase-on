@@ -43,7 +43,7 @@ class ChaseOnGame {
         
         // Start flip animation after a moment
         setTimeout(() => {
-            coin.classList.add(this.isPlayerTurn ? 'result-green' : 'result-blue');
+            coin.classList.add(this.isPlayerTurn ? 'result-blue' : 'result-green');
             
             // Show result after animation
             setTimeout(() => {
@@ -185,6 +185,26 @@ class ChaseOnGame {
         e.target.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/plain', card.id);
+        
+        // Create drag ghost
+        const ghost = createCardElement(card);
+        ghost.className += ' drag-ghost';
+        ghost.id = 'drag-ghost';
+        document.body.appendChild(ghost);
+        
+        // Position ghost at cursor
+        const moveGhost = (ev) => {
+            ghost.style.left = (ev.clientX - 45) + 'px';
+            ghost.style.top = (ev.clientY - 63) + 'px';
+        };
+        moveGhost(e);
+        document.addEventListener('mousemove', moveGhost);
+        this._ghostMoveHandler = moveGhost;
+        
+        // Hide default drag image
+        const emptyImg = document.createElement('img');
+        emptyImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        e.dataTransfer.setDragImage(emptyImg, 0, 0);
     }
 
     handleDragEnd(e) {
@@ -192,6 +212,14 @@ class ChaseOnGame {
         document.querySelectorAll('.drop-zone').forEach(zone => {
             zone.classList.remove('drag-over');
         });
+        
+        // Remove ghost
+        const ghost = document.getElementById('drag-ghost');
+        if (ghost) ghost.remove();
+        if (this._ghostMoveHandler) {
+            document.removeEventListener('mousemove', this._ghostMoveHandler);
+            this._ghostMoveHandler = null;
+        }
     }
 
     handleDragOver(e) {
@@ -238,6 +266,15 @@ class ChaseOnGame {
         
         this.renderPlayerHand();
         this.renderPlaySlots();
+        
+        // Add landing animation to the dropped card
+        const slotContent = e.currentTarget.querySelector('.slot-content');
+        const landedCard = slotContent.querySelector('.card');
+        if (landedCard) {
+            landedCard.classList.add('just-landed');
+            setTimeout(() => landedCard.classList.remove('just-landed'), 300);
+        }
+        
         this.updateConfirmButton();
         this.draggedCard = null;
     }

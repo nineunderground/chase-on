@@ -633,16 +633,39 @@ button:disabled {
 
 /* Drag and Drop */
 .card.dragging {
-    opacity: 0.5;
-    transform: scale(1.05);
+    opacity: 0.3;
+    transform: scale(0.95);
 }
 
 .card[draggable="true"] {
     cursor: grab;
+    transition: transform 0.2s, opacity 0.2s;
 }
 
 .card[draggable="true"]:active {
     cursor: grabbing;
+}
+
+/* Drag ghost/clone */
+.drag-ghost {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.9;
+    transform: rotate(5deg) scale(1.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    transition: none;
+}
+
+/* Landing animation */
+@keyframes cardLand {
+    0% { transform: scale(1.1) rotate(5deg); }
+    50% { transform: scale(1.05) rotate(-2deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+.card.just-landed {
+    animation: cardLand 0.3s ease-out;
 }
 
 .drop-zone {
