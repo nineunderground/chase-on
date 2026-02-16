@@ -75,32 +75,35 @@ class ChaseOnGame {
         
         // Rectangular track layout: 14 positions forming a rectangle
         // Top: 5 spaces (1-5), Right: 2 spaces (6-7), Bottom: 5 spaces (8-12), Left: 2 spaces (13-14)
-        const spaceSize = 44;
-        const gap = 8;
-        const step = spaceSize + gap;
-        const offsetX = 54; // Centering offset
-        const offsetY = 0;
+        const spaceWidth = 100;
+        const spaceHeight = 60;
+        const gapH = 10; // Horizontal gap
+        const gapV = 10; // Vertical gap
+        const stepX = spaceWidth + gapH;  // 110px
+        const stepY = spaceHeight + gapV; // 70px
+        const offsetX = 10; // Centering offset
+        const offsetY = 5;
         
         // Position coordinates map
         const positions = {
             // Top row (left to right)
             1:  { x: 0, y: 0 },
-            2:  { x: step, y: 0 },
-            3:  { x: step * 2, y: 0 },
-            4:  { x: step * 3, y: 0 },
-            5:  { x: step * 4, y: 0 },
+            2:  { x: stepX, y: 0 },
+            3:  { x: stepX * 2, y: 0 },
+            4:  { x: stepX * 3, y: 0 },
+            5:  { x: stepX * 4, y: 0 },
             // Right side (top to bottom)
-            6:  { x: step * 4, y: step },
-            7:  { x: step * 4, y: step * 2 },
+            6:  { x: stepX * 4, y: stepY },
+            7:  { x: stepX * 4, y: stepY * 2 },
             // Bottom row (right to left)
-            8:  { x: step * 4, y: step * 3 },
-            9:  { x: step * 3, y: step * 3 },
-            10: { x: step * 2, y: step * 3 },
-            11: { x: step, y: step * 3 },
-            12: { x: 0, y: step * 3 },
+            8:  { x: stepX * 4, y: stepY * 3 },
+            9:  { x: stepX * 3, y: stepY * 3 },
+            10: { x: stepX * 2, y: stepY * 3 },
+            11: { x: stepX, y: stepY * 3 },
+            12: { x: 0, y: stepY * 3 },
             // Left side (bottom to top)
-            13: { x: 0, y: step * 2 },
-            14: { x: 0, y: step }
+            13: { x: 0, y: stepY * 2 },
+            14: { x: 0, y: stepY }
         };
         
         // Create 14 rectangular positions
