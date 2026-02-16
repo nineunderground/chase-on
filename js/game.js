@@ -533,13 +533,11 @@ class ChaseOnGame {
         const playerNewPos = this.playerPosition;
         const aiNewPos = this.aiPosition;
         
-        // Condition 1: Both players on same position
+        // Condition 1: Both players on same position - compare actual movement values
         if (playerNewPos === aiNewPos) {
-            const playerAbsMove = Math.abs(playerMove);
-            const aiAbsMove = Math.abs(aiMove);
-            if (playerAbsMove > aiAbsMove) {
+            if (playerMove > aiMove) {
                 this.endGame('Same position - Blue moved more!', true);
-            } else if (aiAbsMove > playerAbsMove) {
+            } else if (aiMove > playerMove) {
                 this.endGame('Same position - Green moved more!', false);
             } else {
                 this.endGame('Same position - Equal movement! It\'s a tie!', true);
@@ -547,37 +545,38 @@ class ChaseOnGame {
             return true;
         }
         
-        // Condition 2: Check if someone's movement path crossed through opponent's position
-        // Player catches AI if player moved through AI's position
-        const playerCaughtAI = this.didCrossPosition(playerOldPos, playerMove, aiNewPos);
-        const aiCaughtPlayer = this.didCrossPosition(aiOldPos, aiMove, playerNewPos);
+        // Condition 2: Check for overtake
+        // The player who moved MORE positions checks if they crossed any position
+        // from the other player's series (old pos + all positions moved through)
+        const playerAbsMove = Math.abs(playerMove);
+        const aiAbsMove = Math.abs(aiMove);
         
-        if (playerCaughtAI && aiCaughtPlayer) {
-            // Both crossed each other - whoever moved more wins
-            if (Math.abs(playerMove) > Math.abs(aiMove)) {
-                this.endGame('Both crossed - Blue moved more!', true);
-            } else if (Math.abs(aiMove) > Math.abs(playerMove)) {
-                this.endGame('Both crossed - Green moved more!', false);
-            } else {
-                this.endGame('Both crossed equally! It\'s a tie!', true);
+        if (playerAbsMove > aiAbsMove) {
+            // Player moved more - check if player's path includes any of AI's positions
+            const playerSeries = this.getMovementSeries(playerOldPos, playerMove);
+            const aiSeries = this.getMovementSeries(aiOldPos, aiMove, true); // include start pos
+            
+            const overtook = aiSeries.some(pos => playerSeries.includes(pos));
+            if (overtook) {
+                this.endGame('Blue spy overtook Green!', true);
+                return true;
             }
-            return true;
+        } else if (aiAbsMove > playerAbsMove) {
+            // AI moved more - check if AI's path includes any of player's positions
+            const aiSeries = this.getMovementSeries(aiOldPos, aiMove);
+            const playerSeries = this.getMovementSeries(playerOldPos, playerMove, true); // include start pos
+            
+            const overtook = playerSeries.some(pos => aiSeries.includes(pos));
+            if (overtook) {
+                this.endGame('Green spy overtook Blue!', false);
+                return true;
+            }
         }
-        
-        if (playerCaughtAI) {
-            this.endGame('Blue spy caught Green!', true);
-            return true;
-        }
-        
-        if (aiCaughtPlayer) {
-            this.endGame('Green spy caught Blue!', false);
-            return true;
-        }
+        // If equal absolute movement but different positions, no overtake
         
         // Condition 3: Deck exhausted and can't play
         if (this.deck.length === 0) {
             if (this.playerHand.length < 2 || this.aiHand.length < 2) {
-                // Shortest distance wins
                 const playerDist = this.shortestDistance(playerNewPos, aiNewPos);
                 const aiDist = this.shortestDistance(aiNewPos, playerNewPos);
                 
@@ -595,21 +594,29 @@ class ChaseOnGame {
         return false;
     }
     
-    // Check if moving from startPos by moveAmount crosses through targetPos
-    didCrossPosition(startPos, moveAmount, targetPos) {
-        if (moveAmount === 0) return false;
+    // Get all positions passed through during movement
+    // If includeStart is true, includes the starting position (for the player who moved less)
+    getMovementSeries(startPos, moveAmount, includeStart = false) {
+        const series = [];
         
-        // Generate all positions passed through during movement
+        if (includeStart) {
+            series.push(startPos);
+        }
+        
+        if (moveAmount === 0) {
+            if (!includeStart) series.push(startPos); // If no movement, current pos is the series
+            return series;
+        }
+        
         const direction = moveAmount > 0 ? 1 : -1;
         const steps = Math.abs(moveAmount);
         
         for (let i = 1; i <= steps; i++) {
             const pos = this.wrapPosition(startPos + (i * direction));
-            if (pos === targetPos) {
-                return true;
-            }
+            series.push(pos);
         }
-        return false;
+        
+        return series;
     }
     
     // Shortest distance between two positions on circular board
