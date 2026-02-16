@@ -454,9 +454,10 @@ class ChaseOnGame {
         const playerMove = getMovementValue(playerCard, playerCount);
         const aiMove = getMovementValue(aiCard, aiCount);
         
-        // Move positions (positive = toward opponent)
+        // Move positions: positive = clockwise, negative = counter-clockwise
+        // Both players move in the same direction system
         this.playerPosition = this.wrapPosition(this.playerPosition + playerMove);
-        this.aiPosition = this.wrapPosition(this.aiPosition - aiMove);
+        this.aiPosition = this.wrapPosition(this.aiPosition + aiMove);
         
         this.updateMeeplePositions();
         this.updatePositionDisplays();
@@ -486,13 +487,16 @@ class ChaseOnGame {
     }
 
     getDistance(from) {
+        // Both players move clockwise, so distance is always measured clockwise
         if (from === 'player') {
+            // Player chasing AI clockwise
             let dist = this.aiPosition - this.playerPosition;
-            if (dist < 0) dist += this.BOARD_SIZE;
+            if (dist <= 0) dist += this.BOARD_SIZE;
             return dist;
         } else {
+            // AI chasing player clockwise
             let dist = this.playerPosition - this.aiPosition;
-            if (dist < 0) dist += this.BOARD_SIZE;
+            if (dist <= 0) dist += this.BOARD_SIZE;
             return dist;
         }
     }
