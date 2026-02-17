@@ -1,10 +1,12 @@
 # Chase On 🕵️
 
-A browser-based spy chase card game inspired by Agent Avenue by Nerdlab Games. Play as a green spy trying to catch the blue AI spy on a circular track!
+A browser-based spy chase card game inspired by Agent Avenue by Nerdlab Games. Play as a spy trying to catch the AI opponent on a rectangular track!
 
-## Play Online
+## 🎮 Play Online
 
-Open `index.html` in any modern browser, or serve locally:
+**👉 [https://nineunderground.github.io/chase-on/](https://nineunderground.github.io/chase-on/)**
+
+Or run locally:
 
 ```bash
 python -m http.server 8000
@@ -47,9 +49,9 @@ python -m http.server 8000
 | Mole | 1 | -3 | Always -3 |
 
 ### Board
-- Circular track with 14 positions
-- Green starts at position 1
-- Blue (AI) starts at position 8
+- Rectangular track with 14 positions
+- 🦖 Green (AI) starts at position 1
+- 🦁 Blue (You) starts at position 8
 - Board wraps around (position 14 → position 1)
 
 ## Credits
