@@ -746,33 +746,144 @@ button:disabled {
 }
 
 /* Responsive */
-@media (max-width: 900px) {
-    #board {
-        transform: scale(0.7);
-        transform-origin: top center;
-        margin-bottom: -80px;
+
+/* Touch: make slots obviously tappable on mobile */
+@media (hover: none) and (pointer: coarse) {
+    .drop-zone {
+        cursor: pointer;
+    }
+
+    .drop-zone > span::after {
+        content: ' (tap)';
+        font-size: 0.75rem;
+        opacity: 0.6;
+        font-weight: normal;
+    }
+
+    .card[draggable="true"] {
+        cursor: pointer;
+    }
+
+    .slot-content {
+        min-height: 110px;
     }
 }
 
+/* 860–900px: slight scale-down */
+@media (max-width: 900px) {
+    #board {
+        transform: scale(0.72);
+        transform-origin: top center;
+        margin-bottom: -98px;
+    }
+}
+
+/* 700px: medium screens / small tablets */
+@media (max-width: 700px) {
+    #board {
+        transform: scale(0.56);
+        transform-origin: top center;
+        margin-bottom: -154px;
+    }
+}
+
+/* 600px: large phones (landscape) */
 @media (max-width: 600px) {
     .card {
         width: 75px;
         height: 105px;
     }
-    
+
     #board {
-        transform: scale(0.45);
+        transform: scale(0.46);
         transform-origin: top center;
-        margin-bottom: -180px;
+        margin-bottom: -189px;
     }
-    
+
     #status-bar {
         flex-direction: column;
         gap: 8px;
         text-align: center;
     }
-    
+
     #rules-panel {
         width: 100%;
+    }
+
+    #play-zone {
+        gap: 16px;
+    }
+}
+
+/* 480px: standard phones (portrait) */
+@media (max-width: 480px) {
+    .card {
+        width: 65px;
+        height: 91px;
+        font-size: 0.6rem;
+        padding: 4px;
+    }
+
+    .card-name {
+        font-size: 0.58rem;
+    }
+
+    .card-icon {
+        font-size: 1.3rem;
+    }
+
+    .card-movement {
+        font-size: 0.55rem;
+    }
+
+    #board {
+        transform: scale(0.38);
+        transform-origin: top center;
+        margin-bottom: -217px;
+    }
+
+    #game-container {
+        padding: 8px;
+    }
+
+    #play-zone {
+        gap: 12px;
+    }
+
+    .slot-content {
+        width: 70px;
+        height: 100px;
+    }
+
+    button {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+}
+
+/* 380px: small phones */
+@media (max-width: 380px) {
+    .card {
+        width: 58px;
+        height: 81px;
+        padding: 3px;
+    }
+
+    .card-icon {
+        font-size: 1.1rem;
+    }
+
+    #board {
+        transform: scale(0.33);
+        transform-origin: top center;
+        margin-bottom: -234px;
+    }
+
+    .hand {
+        gap: 5px;
+    }
+
+    #play-zone {
+        gap: 8px;
     }
 }
