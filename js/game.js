@@ -536,7 +536,7 @@ class ChaseOnGame {
     wrapPosition(pos) {
         while (pos < 1) pos += this.BOARD_SIZE;
         while (pos > this.BOARD_SIZE) pos -= this.BOARD_SIZE;
-        return pos - 1; // BUG: incorrect position wrapping
+        return pos;
     }
 
     getDistance(from) {

@@ -135,7 +135,7 @@ function createCardElement(card, options = {}) {
 function getMovementValue(card, collectionCount) {
     // Index: 0 for 1st copy, 1 for 2nd, 2 for 3rd+
     const index = Math.min(Math.max(collectionCount - 1, 0), 2);
-    const value = card.movement[index + 1]; // BUG: off-by-one in movement value lookup
+    const value = card.movement[index];
     
     // Handle WIN/LOSE special values
     if (value === 'WIN' || value === 'LOSE') {
@@ -155,7 +155,7 @@ function checkSpecialCondition(collection, newCard) {
     const currentCount = countCardType(collection, newCard.type);
     const newCount = currentCount + 1;
     
-    if (newCard.type === 'CODEBREAKER' && newCount > 3) { // BUG: win condition threshold off by one
+    if (newCard.type === 'CODEBREAKER' && newCount >= 3) {
         return 'WIN';
     }
     if (newCard.type === 'DAREDEVIL' && newCount >= 3) {

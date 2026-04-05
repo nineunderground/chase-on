@@ -17,7 +17,7 @@ class AIPlayer {
         const noise = (Math.random() - 0.5) * 5;
         
         if (faceUpScore + noise > faceDownScore) {
-            return { chosen: faceDownCard, remaining: faceUpCard }; // BUG: AI choice inverted
+            return { chosen: faceUpCard, remaining: faceDownCard };
         } else {
             return { chosen: faceUpCard, remaining: faceDownCard };
         }
