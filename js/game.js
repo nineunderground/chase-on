@@ -22,7 +22,8 @@ class ChaseOnGame {
         this.faceDownCard = null;
         this.gameOver = false;
         this.draggedCard = null;
-        
+        this.selectedCard = null;
+
         this.ai = new AIPlayer(this);
         
         this.bindEvents();
@@ -157,7 +158,7 @@ class ChaseOnGame {
         this.updateTurnIndicator();
         
         if (this.isPlayerTurn) {
-            this.setMessage('Your turn! Drag 2 cards with different names to the slots.');
+            this.setMessage('Your turn! Tap a card then tap a slot, or drag to play.');
         }
     }
 
@@ -166,11 +167,12 @@ class ChaseOnGame {
         document.getElementById('close-gameover-btn').addEventListener('click', () => this.closeGameOver());
         document.getElementById('play-again-btn').addEventListener('click', () => this.restart());
         
-        // Drop zone events
+        // Drop zone events (drag-and-drop + tap-to-place)
         document.querySelectorAll('.drop-zone').forEach(zone => {
             zone.addEventListener('dragover', (e) => this.handleDragOver(e));
             zone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
             zone.addEventListener('drop', (e) => this.handleDrop(e));
+            zone.addEventListener('click', () => this.handleSlotTap(zone.dataset.slot));
         });
         
         // Allow dropping back to player hand area
@@ -193,13 +195,19 @@ class ChaseOnGame {
             const count = countCardType(this.playerRecruited, card.type);
             const cardEl = createCardElement(card, { highlightIndex: Math.min(count, 2) });
             
-            // Make draggable if it's player's turn
+            // Make draggable and tappable if it's player's turn
             if (this.isPlayerTurn && !this.gameOver) {
                 cardEl.draggable = true;
                 cardEl.addEventListener('dragstart', (e) => this.handleDragStart(e, card));
                 cardEl.addEventListener('dragend', (e) => this.handleDragEnd(e));
+                cardEl.addEventListener('click', () => this.handleCardTap(card));
             }
-            
+
+            // Highlight if this is the currently selected card
+            if (this.selectedCard && this.selectedCard.id === card.id) {
+                cardEl.classList.add('selected');
+            }
+
             handEl.appendChild(cardEl);
         });
         
@@ -314,11 +322,57 @@ class ChaseOnGame {
             this.playerHand.push(this.faceDownCard);
             this.faceDownCard = null;
         }
-        
+
         this.renderPlayerHand();
         this.renderPlaySlots();
         this.updateConfirmButton();
         this.draggedCard = null;
+    }
+
+    handleCardTap(card) {
+        if (!this.isPlayerTurn || this.gameOver) return;
+
+        if (this.selectedCard && this.selectedCard.id === card.id) {
+            // Deselect tapped card
+            this.selectedCard = null;
+        } else {
+            this.selectedCard = card;
+        }
+        this.renderPlayerHand();
+    }
+
+    handleSlotTap(slot) {
+        if (!this.isPlayerTurn || this.gameOver) return;
+        if (!this.selectedCard) return;
+
+        const card = this.selectedCard;
+        const otherCard = slot === 'faceup' ? this.faceDownCard : this.faceUpCard;
+
+        if (otherCard && otherCard.type === card.type) {
+            this.setMessage('Cards must have different names!');
+            return;
+        }
+
+        // Return displaced card to hand
+        if (slot === 'faceup' && this.faceUpCard) {
+            this.playerHand.push(this.faceUpCard);
+        } else if (slot === 'facedown' && this.faceDownCard) {
+            this.playerHand.push(this.faceDownCard);
+        }
+
+        // Remove selected card from hand
+        this.playerHand = this.playerHand.filter(c => c.id !== card.id);
+
+        if (slot === 'faceup') {
+            this.faceUpCard = card;
+        } else {
+            this.faceDownCard = card;
+        }
+
+        this.selectedCard = null;
+        this.renderPlayerHand();
+        this.renderPlaySlots();
+        this.updateConfirmButton();
     }
 
     renderPlaySlots() {
@@ -333,9 +387,10 @@ class ChaseOnGame {
             cardEl.draggable = true;
             cardEl.addEventListener('dragstart', (e) => this.handleDragStart(e, this.faceUpCard));
             cardEl.addEventListener('dragend', (e) => this.handleDragEnd(e));
+            cardEl.addEventListener('click', (e) => { e.stopPropagation(); this.returnCardToHand(this.faceUpCard); });
             faceUpSlot.appendChild(cardEl);
         }
-        
+
         if (this.faceDownCard) {
             // Show as card back in Face Down slot
             const cardEl = document.createElement('div');
@@ -344,6 +399,7 @@ class ChaseOnGame {
             cardEl.dataset.cardId = this.faceDownCard.id;
             cardEl.addEventListener('dragstart', (e) => this.handleDragStart(e, this.faceDownCard));
             cardEl.addEventListener('dragend', (e) => this.handleDragEnd(e));
+            cardEl.addEventListener('click', (e) => { e.stopPropagation(); this.returnCardToHand(this.faceDownCard); });
             faceDownSlot.appendChild(cardEl);
         }
     }
@@ -409,6 +465,7 @@ class ChaseOnGame {
 
     confirmPlay() {
         if (!this.faceUpCard || !this.faceDownCard) return;
+        this.selectedCard = null;
         
         // Add confirming animation to cards in slots
         const faceUpSlot = document.querySelector('#face-up-slot .slot-content .card');
@@ -816,7 +873,7 @@ class ChaseOnGame {
         this.faceDownCard = null;
         
         this.updateTurnIndicator();
-        this.setMessage('Your turn! Drag 2 cards with different names to the slots.');
+        this.setMessage('Your turn! Tap a card then tap a slot, or drag to play.');
         this.renderPlayerHand();
         this.renderPlaySlots();
         this.updateConfirmButton();
@@ -901,7 +958,8 @@ class ChaseOnGame {
         this.faceDownCard = null;
         this.gameOver = false;
         this.draggedCard = null;
-        
+        this.selectedCard = null;
+
         // Reset UI
         document.getElementById('gameover-modal').classList.add('hidden');
         document.getElementById('play-again-btn').classList.add('hidden');
