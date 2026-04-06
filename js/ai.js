@@ -19,7 +19,7 @@ class AIPlayer {
         if (faceUpScore + noise > faceDownScore) {
             return { chosen: faceUpCard, remaining: faceDownCard };
         } else {
-            return { chosen: faceUpCard, remaining: faceDownCard };
+            return { chosen: faceDownCard, remaining: faceUpCard };
         }
     }
 

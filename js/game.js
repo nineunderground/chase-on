@@ -541,6 +541,9 @@ class ChaseOnGame {
             this.aiRecruited.slice(0, -1), aiCard
         );
         
+        // Note: player conditions are checked before AI conditions.
+        // In the rare case both trigger simultaneously (e.g. both collect 3rd Codebreaker),
+        // the player wins. This is the intended tie-break rule.
         if (playerCondition === 'WIN') {
             this.endGame('You collected 3 Codebreakers! YOU WIN! 🎉', true);
             return;
@@ -615,14 +618,18 @@ class ChaseOnGame {
         const playerNewPos = this.playerPosition;
         const aiNewPos = this.aiPosition;
         
-        // Condition 1: Both players on same position - compare actual movement values
+        // Condition 1: Both players on same position - winner is whoever moved toward the other
         if (playerNewPos === aiNewPos) {
-            if (playerMove > aiMove) {
+            if (playerMove > 0 && aiMove <= 0) {
+                this.endGame('Same position - Blue caught Green!', true);
+            } else if (aiMove > 0 && playerMove <= 0) {
+                this.endGame('Same position - Green caught Blue!', false);
+            } else if (playerMove > aiMove) {
                 this.endGame('Same position - Blue moved more!', true);
             } else if (aiMove > playerMove) {
                 this.endGame('Same position - Green moved more!', false);
             } else {
-                this.endGame('Same position - Equal movement! It\'s a tie!', true);
+                this.endGame('Same position - It\'s a tie! Blue wins!', true);
             }
             return true;
         }
@@ -649,15 +656,32 @@ class ChaseOnGame {
             // AI moved more - check if AI's path includes any of player's positions
             const aiSeries = this.getMovementSeries(aiOldPos, aiMove);
             const playerSeries = this.getMovementSeries(playerOldPos, playerMove, true); // include start pos
-            
+
             // Check if any player position (including start) or player's final position is in AI's path
             const overtook = playerSeries.some(pos => aiSeries.includes(pos)) || aiSeries.includes(playerNewPos);
             if (overtook) {
                 this.endGame('Green spy overtook Blue!', false);
                 return true;
             }
+        } else {
+            // Equal absolute movement — check if paths intersect (they moved through each other)
+            const pSeries = this.getMovementSeries(playerOldPos, playerMove);
+            const aSeries = this.getMovementSeries(aiOldPos, aiMove);
+            const intersection = pSeries.some(pos => aSeries.includes(pos));
+            if (intersection) {
+                // Determine winner: whoever moved toward the other (positive movement toward opponent)
+                // If player moved positively (toward AI) and AI moved negatively, player wins
+                if (playerMove > 0 && aiMove < 0) {
+                    this.endGame('Cross-through catch - Blue wins!', true);
+                } else if (aiMove > 0 && playerMove < 0) {
+                    this.endGame('Cross-through catch - Green wins!', false);
+                } else {
+                    // Both moved in same direction somehow - it's a tie, player wins
+                    this.endGame('Cross-through catch - tie! Blue wins!', true);
+                }
+                return true;
+            }
         }
-        // If equal absolute movement but different positions, no overtake
         
         // Condition 3: Deck exhausted and can't play
         if (this.deck.length === 0) {
